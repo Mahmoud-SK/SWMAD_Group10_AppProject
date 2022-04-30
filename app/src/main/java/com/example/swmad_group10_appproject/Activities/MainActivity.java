@@ -8,9 +8,11 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.swmad_group10_appproject.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
-    Button btn_testProfile;
+    Button btn_testProfile, btnLogout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
         int x = 5;
 
         btn_testProfile = findViewById(R.id.btn_testProfile);
+        btnLogout = findViewById(R.id.logoutBtn);
         btn_testProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -25,5 +28,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logOut();
+            }
+        });
+    }
+
+    private void logOut() {
+        FirebaseAuth.getInstance().signOut();
+        Intent logInIntent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(logInIntent);
+        finish();
     }
 }
