@@ -12,10 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SWMAD_Group10_AppProject">
         <activity
-            android:name=".ProfileModule.MemeBuilderModule.MemeBuilderActivity"
+            android:name=".Activities.MemeBuilderActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfileModule.ProfileActivity"
+            android:name=".Activities.ProfileActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

@@ -1,4 +1,4 @@
-package com.example.swmad_group10_appproject.ProfileModule.MemeBuilderModule;
+package com.example.swmad_group10_appproject.Activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;

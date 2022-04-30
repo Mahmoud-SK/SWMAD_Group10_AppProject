@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.swmad_group10_appproject.ProfileModule.ProfileActivity;
+import com.example.swmad_group10_appproject.Activities.ProfileActivity;
 
 public class MainActivity extends AppCompatActivity {
     Button btn_testProfile;

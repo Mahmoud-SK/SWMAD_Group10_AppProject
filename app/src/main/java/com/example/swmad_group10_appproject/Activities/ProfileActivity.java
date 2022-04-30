@@ -1,4 +1,4 @@
-package com.example.swmad_group10_appproject.ProfileModule;
+package com.example.swmad_group10_appproject.Activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,9 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 
-import com.example.swmad_group10_appproject.ProfileModule.MemeBuilderModule.MemeBuilderActivity;
 import com.example.swmad_group10_appproject.R;
 
 public class ProfileActivity extends AppCompatActivity {
