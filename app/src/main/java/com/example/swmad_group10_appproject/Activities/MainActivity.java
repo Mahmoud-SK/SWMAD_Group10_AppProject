@@ -1,4 +1,4 @@
-package com.example.swmad_group10_appproject;
+package com.example.swmad_group10_appproject.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.swmad_group10_appproject.Activities.ProfileActivity;
+import com.example.swmad_group10_appproject.R;
 
 public class MainActivity extends AppCompatActivity {
     Button btn_testProfile;
