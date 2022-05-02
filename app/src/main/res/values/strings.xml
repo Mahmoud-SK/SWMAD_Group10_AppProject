@@ -11,4 +11,5 @@
     <string name="testLogOut">Test Log Out</string>
     <string name="LoginTo">Login to your UMeme account</string>
     <string name="btnBack">Back</string>
+    <string name="BackButton">Back</string>
 </resources>
