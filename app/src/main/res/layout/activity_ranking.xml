@@ -16,7 +16,7 @@
         android:isIndicator="false"
         android:numStars="5"
         android:progress="@integer/material_motion_duration_long_1"
-
+        android:contentDescription="@string/select_the_number_of_stars_to_rate"
         android:rating="0"
         android:stepSize="0.5"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        android:text="back"
+        android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -47,7 +47,7 @@
         android:layout_width="178dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Ranking your meme"
+        android:text="@string/ranking_your_meme"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,13 +55,15 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="100dp"
-        android:layout_height="93dp"
+        android:layout_width="115dp"
+        android:layout_height="134dp"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/meme"
         app:layout_constraintBottom_toTopOf="@+id/ratingBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtRanking"
+        tools:ignore="ImageContrastCheck"
         tools:srcCompat="@tools:sample/avatars" />
 
     <androidx.constraintlayout.widget.Guideline

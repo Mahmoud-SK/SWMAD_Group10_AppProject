@@ -70,6 +70,8 @@ public class RankingActivity extends AppCompatActivity {
             }
         });
 
+
+
         btn2Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) { finish();}
