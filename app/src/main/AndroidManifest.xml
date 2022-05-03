@@ -19,6 +19,9 @@
             android:name=".Activities.MemeActivity"
             android:exported="false" />
         <activity
+            android:name=".Activities.RankingActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.RegisterActivity"
             android:exported="false" />
         <activity
