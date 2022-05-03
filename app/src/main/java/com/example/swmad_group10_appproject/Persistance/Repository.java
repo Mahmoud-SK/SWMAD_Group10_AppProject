@@ -53,7 +53,6 @@ public class Repository {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseStore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference("Memes");
         databaseReference = FirebaseDatabase.getInstance().getReference("Memes");
     }
 
@@ -97,6 +96,7 @@ public class Repository {
         byte [] data = outputStream.toByteArray();
 
         String path = "Memes/" + UUID.randomUUID() + ".png";
+        StorageReference storageRef = storage.getReference(path);
 
         StorageMetadata metaData = new StorageMetadata.Builder().build();
 

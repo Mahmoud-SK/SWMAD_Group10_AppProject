@@ -2,20 +2,29 @@ package com.example.swmad_group10_appproject.Activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.swmad_group10_appproject.Models.Meme;
 import com.example.swmad_group10_appproject.R;
+import com.example.swmad_group10_appproject.ViewModels.ProfileViewModel;
+import com.example.swmad_group10_appproject.ViewModels.RegisterViewModel;
+
+import java.io.IOException;
 
 public class ProfileActivity extends AppCompatActivity {
 
     Button btn_createMeme, btn_uploadMeme;
-
+    ProfileViewModel vm;
     private static int RESULT_LOAD_IMAGE = 1;
+    private Meme newMeme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +33,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         btn_uploadMeme = findViewById(R.id.btn_uploadMeme);
         btn_createMeme = findViewById(R.id.btn_CreateMeme);
-
-
+        vm = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         btn_uploadMeme.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,9 +69,16 @@ public class ProfileActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK){
             if(requestCode==200){
                 final Uri selectedImgUri = data.getData();
-                if (selectedImgUri!=null){
-                    //Upload the selected picture here
+                newMeme = new Meme("Text","Text","",0.0,0.0,0);
+                // https://stackoverflow.com/questions/3879992/how-to-get-bitmap-from-an-uri
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImgUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                vm.uploadMeme(newMeme,bitmap);
+
             }
         }
     }

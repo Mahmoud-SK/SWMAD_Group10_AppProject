@@ -1,21 +1,16 @@
 package com.example.swmad_group10_appproject.Models;
 
 public class Meme {
-    public Meme(int memeId, String topText, String bottomText, String memeimgURL, double latitude, double longitude, int userId) {
-        this.memeId = memeId;
+    public Meme(String topText, String bottomText, String memeImgURL, double latitude, double longitude, int userId) {
         this.topText = topText;
         this.bottomText = bottomText;
-        this.memeimgURL = memeimgURL;
+        this.memeImgURL = memeImgURL;
         this.latitude = latitude;
         this.longitude = longitude;
         this.userId = userId;
     }
 
     public Meme(){}
-
-    public int getMemeId() {
-        return memeId;
-    }
 
     public String getTopText() {
         return topText;
@@ -39,10 +34,6 @@ public class Meme {
 
     public int getUserId() {
         return userId;
-    }
-
-    public void setMemeId(int memeId) {
-        this.memeId = memeId;
     }
 
     public void setTopText(String topText) {
@@ -69,7 +60,6 @@ public class Meme {
         this.userId = userId;
     }
 
-    private int memeId;
     private String topText;
     private String bottomText;
     private String memeImgURL;
