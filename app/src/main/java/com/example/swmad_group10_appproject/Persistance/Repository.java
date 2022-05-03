@@ -3,12 +3,16 @@ package com.example.swmad_group10_appproject.Persistance;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.swmad_group10_appproject.Activities.LoginActivity;
+import com.example.swmad_group10_appproject.Activities.MainActivity;
 import com.example.swmad_group10_appproject.Models.Meme;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -84,6 +88,19 @@ public class Repository {
                                 }
                             });
 
+                }
+            }
+        });
+    }
+
+    public void loginUser(String email, String password) {
+        firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Log.d("Repository", "Logged in! Welcome to UMeme");
+                } else {
+                    Log.d("Repository", "Error! " + task.getException().getMessage());
                 }
             }
         });

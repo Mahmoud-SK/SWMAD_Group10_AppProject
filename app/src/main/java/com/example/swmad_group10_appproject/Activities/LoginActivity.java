@@ -2,6 +2,7 @@ package com.example.swmad_group10_appproject.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.swmad_group10_appproject.R;
+import com.example.swmad_group10_appproject.ViewModels.LoginViewModel;
+import com.example.swmad_group10_appproject.ViewModels.RegisterViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -25,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText txtEmail, txtPassword;
     Button btnRegister, btnLogin;
     FirebaseAuth fireBaseAuth;
-
+    LoginViewModel vm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         txtPassword = findViewById(R.id.passwordField);
 
         fireBaseAuth = FirebaseAuth.getInstance();
+        vm = new ViewModelProvider(this).get(LoginViewModel.class);
 
         // Checking if already logged in
         if (fireBaseAuth.getCurrentUser() != null) {
@@ -77,20 +81,14 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Authenticating the User
+        try {
+            vm.loginUser(email,password);
+            Intent loginIntent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(loginIntent);
 
-        fireBaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(LoginActivity.this, "Logged in! Welcome to UMeme", Toast.LENGTH_SHORT).show();
-                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(mainIntent);
-                } else {
-                    Toast.makeText(LoginActivity.this, "Error! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.d("LoginActivity", "Error! " + task.getException().getMessage());
-                }
-            }
-        });
+        } catch (Exception e) {
+            Log.d("LoginActivity", "Error logging in!: " + e);
+        }
     }
 
     private void GotoRegister() {
