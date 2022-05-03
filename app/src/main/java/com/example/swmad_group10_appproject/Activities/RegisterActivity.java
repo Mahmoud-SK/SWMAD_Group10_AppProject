@@ -2,6 +2,7 @@ package com.example.swmad_group10_appproject.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,12 +13,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.swmad_group10_appproject.ViewModels.RegisterViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.example.swmad_group10_appproject.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 // Inspiration taken from: https://www.youtube.com/watch?v=TwHmrZxiPA8
 
@@ -25,7 +33,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     EditText txtUsername, txtEmail, txtPassword;
     Button btnSignUp, btnBack;
-    FirebaseAuth fireBaseAuth;
+    RegisterViewModel vm;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +47,8 @@ public class RegisterActivity extends AppCompatActivity {
         btnSignUp = findViewById(R.id.signUpBtn);
         btnBack = findViewById(R.id.backBtn);
 
-        fireBaseAuth = FirebaseAuth.getInstance();
+        vm = new ViewModelProvider(this).get(RegisterViewModel.class);
+
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,19 +88,9 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // Registering the user in firebase
-        fireBaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(RegisterActivity.this, "Account has been created!", Toast.LENGTH_SHORT).show();
-                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(mainIntent);
-                } else {
-                    Toast.makeText(RegisterActivity.this, "Error! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.d("RegisterActivity", "Error! " + task.getException().getMessage());
-                }
-            }
-        });
+        vm.registerUser(email,password,username);
+
+        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(mainIntent);
     }
 }
