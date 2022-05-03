@@ -13,8 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SWMAD_Group10_AppProject">
         <activity
-            android:name=".Activities.MemeActivity"
-            android:exported="false"/>
+            android:name=".Activities.RankingActivity"
+            android:exported="false" />
         <activity
             android:name=".Activities.RegisterActivity"
             android:exported="false" />
