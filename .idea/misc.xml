@@ -7,6 +7,11 @@
         <entry key="..\:/IKT programmer/MAD/AppProject/app/src/main/res/layout/fragment_meme.xml" value="0.25416666666666665" />
         <entry key="..\:/IKT programmer/MAD/AppProject/app/src/main/res/layout/meme_fragment.xml" value="0.11302083333333333" />
         <entry key="..\:/IKT programmer/MAD/AppProject/app/src/main/res/layout/meme_item.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/laohu/AndroidStudioProjects/SWMAD_Group10_AppProject/app/src/main/res/layout/activity_liked_meme_detail.xml" value="0.2604166666666667" />
+        <entry key="..\:/Users/laohu/AndroidStudioProjects/SWMAD_Group10_AppProject/app/src/main/res/layout/activity_meme_builder.xml" value="0.333786231884058" />
+        <entry key="..\:/Users/laohu/AndroidStudioProjects/SWMAD_Group10_AppProject/app/src/main/res/layout/activity_profile.xml" value="0.22" />
+        <entry key="..\:/Users/laohu/AndroidStudioProjects/SWMAD_Group10_AppProject/app/src/main/res/layout/activity_recycler_view_liked_meme_list.xml" value="0.2604166666666667" />
+        <entry key="..\:/Users/laohu/AndroidStudioProjects/SWMAD_Group10_AppProject/app/src/main/res/layout/liked_meme_list_item.xml" value="0.38734896943852165" />
       </map>
     </option>
   </component>

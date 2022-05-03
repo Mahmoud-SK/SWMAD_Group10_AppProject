@@ -2,6 +2,7 @@ package com.example.swmad_group10_appproject.Activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -11,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -55,12 +57,31 @@ public class MemeBuilderActivity extends AppCompatActivity {
             }
         });
 
+        // Reference: https://www.youtube.com/watch?v=Rd89cVKrQBg
         //Edit text on meme
         btn_editMeme.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (captureImage!=null){
                     txt_editMeme.setVisibility(View.VISIBLE);
+
+                    txt_editMeme.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                            if (txt_editMeme.getText().toString().length()>0){
+                                float y = motionEvent.getY();
+                                if (motionEvent.getAction()==MotionEvent.ACTION_UP){
+                                    txt_editMeme.setY(y+0.02f);
+                                }else if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                                    txt_editMeme.setY(y-0.02f);
+                                }
+                                else{
+                                    return false;
+                                }
+                            }
+                            return false;
+                        }
+                    });
                     //Upload imageMeme and text in database
                 }
             }

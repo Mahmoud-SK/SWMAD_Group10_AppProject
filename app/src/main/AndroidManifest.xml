@@ -13,8 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SWMAD_Group10_AppProject">
         <activity
+            android:name=".Activities.LikedMemeDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.MemeActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".Activities.RegisterActivity"
             android:exported="false" />
