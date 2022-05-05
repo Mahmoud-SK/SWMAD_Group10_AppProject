@@ -78,7 +78,7 @@ public class MemeService extends Service {
         return new NotificationCompat.Builder(getApplicationContext(), SERVICE_CHANNEL)
                 .setContentTitle("UMeme AppProject - Group 10")
                 .setContentText("Remember to check out the quality memes! :)")
-                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.mipmap.ic_trollicon_foreground)
                 .build();
     }
 
