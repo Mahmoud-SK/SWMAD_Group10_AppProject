@@ -41,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
 
         fireBaseAuth = FirebaseAuth.getInstance();
         vm = new ViewModelProvider(this).get(LoginViewModel.class);
+        vm.startService();
 
         // Checking if already logged in
         if (fireBaseAuth.getCurrentUser() != null) {
