@@ -87,11 +87,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(),"Successfully logged in!", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(),"Successfully logged in!", Toast.LENGTH_SHORT).show();
                     Intent memeIntent = new Intent(getApplicationContext(),MemeActivity.class);
                     startActivity(memeIntent);
                 } else {
-                    Toast.makeText(getApplicationContext(),"Invalid Email/Password!", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(),"Invalid Email/Password!", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Error logging in, email/password invalid");
                 }
             }
