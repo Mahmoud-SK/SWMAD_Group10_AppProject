@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         // Authenticating the User
         try {
             vm.loginUser(email,password);
-            Intent loginIntent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent loginIntent = new Intent(LoginActivity.this, MemeActivity.class);
             startActivity(loginIntent);
 
         } catch (Exception e) {
