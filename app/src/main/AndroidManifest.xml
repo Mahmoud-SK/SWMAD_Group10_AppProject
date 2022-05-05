@@ -17,7 +17,7 @@
             android:exported="false" />
         <activity
             android:name=".Activities.MemeActivity"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".Activities.RankingActivity"
             android:exported="false" />

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.swmad_group10_appproject.Activities.MemeActivity;
 import com.example.swmad_group10_appproject.R;
 
@@ -29,14 +30,16 @@ public class MemeFragment extends Fragment {
     private ImageView imgMemeImage;
     private String topText;
     private String bottomText;
+    private String imgLink;
 
-    public MemeFragment(String topText, String bottomText) {
+    public MemeFragment(String topText, String bottomText, String imgLink) {
         this.topText = topText;
         this.bottomText = bottomText;
+        this.imgLink = imgLink;
     }
 
-    public static MemeFragment newInstance(String topText, String bottomText) {
-        return new MemeFragment(topText, bottomText);
+    public static MemeFragment newInstance(String topText, String bottomText, String imgLink) {
+        return new MemeFragment(topText, bottomText, imgLink);
     }
 
     @Override
@@ -51,8 +54,10 @@ public class MemeFragment extends Fragment {
         View v = inflater.inflate(R.layout.meme_fragment, container, false);
         txtTopText = v.findViewById(R.id.txtMemeTopText);
         txtBottomText = v.findViewById(R.id.txtMemeBottomText);
+        imgMemeImage = v.findViewById(R.id.imgMemeImage);
         txtTopText.setText(topText);
         txtBottomText.setText(bottomText);
+        Glide.with(imgMemeImage.getContext()).load(imgLink).into(imgMemeImage);
 
         /*final GestureDetector gesture = new GestureDetector(getActivity(),
                 new GestureDetector.SimpleOnGestureListener(){

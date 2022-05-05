@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
@@ -32,11 +33,13 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class Repository {
 
+    private static final String TAG = "Repository";
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseStore;
     private static Repository instance;
@@ -136,23 +139,39 @@ public class Repository {
 
               meme.setMemeImgURL(downloadURI.toString());
 
-                firebaseStore.collection("Memes")
-                        .add(meme)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Log.d("Repository", "DocumentSnapshot added with ID: " + documentReference.getId());
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("Repository", "Error adding document", e);
-                            }
-                        });
+              firebaseStore.collection("Memes")
+                       .add(meme)
+                       .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                           @Override
+                           public void onSuccess(DocumentReference documentReference) {
+                               Log.d("Repository", "DocumentSnapshot added with ID: " + documentReference.getId());
+                           }
+                       })
+                       .addOnFailureListener(new OnFailureListener() {
+                           @Override
+                           public void onFailure(@NonNull Exception e) {
+                               Log.w("Repository", "Error adding document", e);
+                           }
+                       });
             }
         });
 
     }
+
+    public Task<QuerySnapshot> getMemes(){
+         return firebaseStore.collection("Memes").get();
+                 /*.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+             @Override
+             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                 if (task.isSuccessful()){
+                     Log.d(TAG, "get memes from firebase: " + task.getResult().getDocuments());
+                 }
+                 else {
+                     Log.e(TAG, "error getting memes from firebase: ", task.getException());
+                 }
+             }
+         });*/
+    }
+
 
 }
