@@ -19,4 +19,8 @@ public class LoginViewModel extends AndroidViewModel {
     {
         repository.loginUser(email,password);
     }
+
+    public void startService() {
+        repository.startForegroundService(getApplication());
+    }
 }

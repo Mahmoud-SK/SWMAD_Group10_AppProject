@@ -88,9 +88,14 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        vm.registerUser(email,password,username);
+        // Authenticating the User
+        try {
+            vm.registerUser(email,password,username);
+            Intent mainIntent = new Intent(RegisterActivity.this, MemeActivity.class);
+            startActivity(mainIntent);
 
-        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(mainIntent);
+        } catch (Exception e) {
+            Log.d("RegisterActivity", "Error registering an account!: " + e);
+        }
     }
 }

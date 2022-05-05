@@ -1,13 +1,14 @@
 package com.example.swmad_group10_appproject.Models;
 
 public class Meme {
-    public Meme(String topText, String bottomText, String memeImgURL, double latitude, double longitude, int userId) {
+    public Meme(String topText, String bottomText, String memeImgURL, double latitude, double longitude, int userId, int score) {
         this.topText = topText;
         this.bottomText = bottomText;
         this.memeImgURL = memeImgURL;
         this.latitude = latitude;
         this.longitude = longitude;
         this.userId = userId;
+        this.score = score;
     }
 
     public Meme(){}
@@ -36,6 +37,11 @@ public class Meme {
         return userId;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+
     public void setTopText(String topText) {
         this.topText = topText;
     }
@@ -60,11 +66,16 @@ public class Meme {
         this.userId = userId;
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     private String topText;
     private String bottomText;
     private String memeImgURL;
     private double latitude;
     private double longitude;
     private int userId;
+    private int score;
 
 }

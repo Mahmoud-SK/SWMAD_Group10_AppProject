@@ -69,7 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK){
             if(requestCode==200){
                 final Uri selectedImgUri = data.getData();
-                newMeme = new Meme("Text","Text","",0.0,0.0,0);
+                newMeme = new Meme("Text","Text","",0.0,0.0,0,0);
                 // https://stackoverflow.com/questions/3879992/how-to-get-bitmap-from-an-uri
                 Bitmap bitmap = null;
                 try {
