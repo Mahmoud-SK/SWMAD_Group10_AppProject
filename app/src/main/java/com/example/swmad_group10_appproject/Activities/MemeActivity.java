@@ -156,7 +156,9 @@ public class MemeActivity extends AppCompatActivity {
                     (double) data.get("latitude"),
                     (double) data.get("longitude"),
                     Integer.parseInt(String.valueOf(data.get("userId"))),
-                    Integer.parseInt(String.valueOf(data.get("score"))));
+                    Integer.parseInt(String.valueOf(data.get("score"))),
+                    snapshot.getId()
+            );
 
             tempList.add(tempMeme);
         }
