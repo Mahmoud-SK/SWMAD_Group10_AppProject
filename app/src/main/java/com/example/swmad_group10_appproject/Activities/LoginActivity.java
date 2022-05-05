@@ -25,10 +25,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG = "LoginActivity";
     EditText txtEmail, txtPassword;
     Button btnRegister, btnLogin;
-    FirebaseAuth fireBaseAuth;
     LoginViewModel vm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,13 +40,13 @@ public class LoginActivity extends AppCompatActivity {
         txtEmail = findViewById(R.id.emailField);
         txtPassword = findViewById(R.id.passwordField);
 
-        fireBaseAuth = FirebaseAuth.getInstance();
         vm = new ViewModelProvider(this).get(LoginViewModel.class);
         vm.startService();
 
         // Checking if already logged in
-        if (fireBaseAuth.getCurrentUser() != null) {
-            Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+        if (vm.getCurrentUser() != null) {
+            Intent mainIntent = new Intent(getApplicationContext(), MemeActivity.class);
+            Log.d(TAG, "getCurrentUserID: " + vm.getCurrentUser());
             startActivity(mainIntent);
             finish();
         }
@@ -82,14 +83,19 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Authenticating the User
-        try {
-            vm.loginUser(email,password);
-            Intent loginIntent = new Intent(LoginActivity.this, MemeActivity.class);
-            startActivity(loginIntent);
-
-        } catch (Exception e) {
-            Log.d("LoginActivity", "Error logging in!: " + e);
-        }
+        vm.loginUser(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(),"Successfully logged in!", Toast.LENGTH_SHORT);
+                    Intent memeIntent = new Intent(getApplicationContext(),MemeActivity.class);
+                    startActivity(memeIntent);
+                } else {
+                    Toast.makeText(getApplicationContext(),"Invalid Email/Password!", Toast.LENGTH_SHORT);
+                    Log.e(TAG, "Error logging in, email/password invalid");
+                }
+            }
+        });
     }
 
     private void GotoRegister() {

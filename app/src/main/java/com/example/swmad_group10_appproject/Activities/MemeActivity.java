@@ -10,9 +10,9 @@ import com.example.swmad_group10_appproject.R;
 import com.example.swmad_group10_appproject.ViewModels.MemeViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.model.Document;
 
 import android.os.Bundle;
 import android.util.Log;

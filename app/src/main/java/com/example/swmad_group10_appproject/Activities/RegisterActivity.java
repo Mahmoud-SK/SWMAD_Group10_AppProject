@@ -35,7 +35,6 @@ public class RegisterActivity extends AppCompatActivity {
     Button btnSignUp, btnBack;
     RegisterViewModel vm;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
