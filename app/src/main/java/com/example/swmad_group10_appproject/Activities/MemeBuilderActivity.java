@@ -102,7 +102,7 @@ public class MemeBuilderActivity extends AppCompatActivity {
                 if (captureImage!=null){
                     //Upload meme on database
                     Meme newMeme = new Meme();
-                    newMeme = new Meme(txt_edit_top.getText().toString(),txt_edit_bottom.getText().toString(),"",0.0,0.0,0,0);
+                    newMeme = new Meme(txt_edit_top.getText().toString(),txt_edit_bottom.getText().toString(),"",0.0,0.0,0,0,"");
                     try {
                         vm.uploadMeme(newMeme,captureImage);
                         SaveToast();
