@@ -1,26 +1,22 @@
 package com.example.swmad_group10_appproject.ViewModels;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 
 import androidx.lifecycle.AndroidViewModel;
 
+import com.example.swmad_group10_appproject.Models.Meme;
 import com.example.swmad_group10_appproject.Persistance.Repository;
 
-public class LoginViewModel extends AndroidViewModel {
-
+public class MemeBuilderViewModel extends AndroidViewModel {
     private Repository repository;
 
-    public LoginViewModel(Application app) {
+    public MemeBuilderViewModel(Application app) {
         super(app);
         repository = Repository.getInstance(app);
     }
 
-    public void loginUser(String email, String password)
-    {
-        repository.loginUser(email,password);
-    }
-
-    public void startService() {
-        repository.startForegroundService(getApplication());
+    public void uploadMeme (Meme meme, Bitmap image) {
+        repository.uploadMeme(meme,image);
     }
 }

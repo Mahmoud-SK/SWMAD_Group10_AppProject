@@ -2,31 +2,48 @@ package com.example.swmad_group10_appproject.Activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.view.MotionEvent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.swmad_group10_appproject.Models.Meme;
 import com.example.swmad_group10_appproject.R;
+import com.example.swmad_group10_appproject.ViewModels.MemeBuilderViewModel;
+import com.example.swmad_group10_appproject.ViewModels.ProfileViewModel;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MemeBuilderActivity extends AppCompatActivity {
 
     Button btn_openCamera, btn_editMeme;
+    ImageButton btn_imgUpload;
     ImageView img_camera;
-    TextView txt_editMeme;
+    TextView txt_edit_bottom, txt_edit_top;
 
     Bitmap captureImage;
+
+    MemeBuilderViewModel vm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +53,11 @@ public class MemeBuilderActivity extends AppCompatActivity {
         img_camera = findViewById(R.id.img_camera);
         btn_openCamera = findViewById(R.id.btn_openCamera);
         btn_editMeme = findViewById(R.id.btn_editMeme);
-        txt_editMeme = findViewById(R.id.txt_edit);
+        btn_imgUpload = findViewById(R.id.btn_imgUpload);
+        txt_edit_bottom = findViewById(R.id.txt_edit_bottom);
+        txt_edit_top = findViewById(R.id.txt_edit_top);
+
+        vm = new ViewModelProvider(this).get(MemeBuilderViewModel.class);
 
         // Reference: https://www.youtube.com/watch?v=RaOyw84625w
         //Request for camera permission
@@ -53,7 +74,12 @@ public class MemeBuilderActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Open Camera
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent,100);
+                try {
+                    startActivityForResult(intent,100);
+                }catch (Exception e){
+                    //Error message
+                }
+
             }
         });
 
@@ -63,26 +89,28 @@ public class MemeBuilderActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (captureImage!=null){
-                    txt_editMeme.setVisibility(View.VISIBLE);
+                    txt_edit_bottom.setVisibility(View.VISIBLE);
+                    txt_edit_top.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
-                    txt_editMeme.setOnTouchListener(new View.OnTouchListener() {
-                        @Override
-                        public boolean onTouch(View view, MotionEvent motionEvent) {
-                            if (txt_editMeme.getText().toString().length()>0){
-                                float y = motionEvent.getY();
-                                if (motionEvent.getAction()==MotionEvent.ACTION_UP){
-                                    txt_editMeme.setY(y+0.02f);
-                                }else if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
-                                    txt_editMeme.setY(y-0.02f);
-                                }
-                                else{
-                                    return false;
-                                }
-                            }
-                            return false;
-                        }
-                    });
-                    //Upload imageMeme and text in database
+        btn_imgUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("MemeBuilderActivity", "Test state");
+                if (captureImage!=null){
+                    //Upload meme on database
+                    Meme newMeme = new Meme();
+                    newMeme = new Meme(txt_edit_top.getText().toString(),txt_edit_bottom.getText().toString(),"",0.0,0.0,0,0);
+                    try {
+                        vm.uploadMeme(newMeme,captureImage);
+                        SaveToast();
+                    }catch (Exception e){
+
+                    }
+                    finish();
+                    Log.d("MemeBuilderActivity", "The meme is saved in database");
                 }
             }
         });
@@ -96,10 +124,16 @@ public class MemeBuilderActivity extends AppCompatActivity {
             //Get Capture Image
             if (data.getExtras()!=null){
                 captureImage = (Bitmap) data.getExtras().get("data");
-
             }
             //Set Capture Image
             img_camera.setImageBitmap(captureImage);
         }
+    }
+
+    private void SaveToast(){
+        CharSequence text = "You have uploaded your meme !";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(this, text, duration);
+        toast.show();
     }
 }

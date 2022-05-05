@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import com.example.swmad_group10_appproject.Activities.LoginActivity;
 import com.example.swmad_group10_appproject.Activities.MainActivity;
 import com.example.swmad_group10_appproject.Models.Meme;
+import com.example.swmad_group10_appproject.Services.MemeService;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -156,6 +157,11 @@ public class Repository {
             }
         });
 
+    }
+
+    public void startForegroundService(Context context) {
+        Intent drinkService = new Intent(context, MemeService.class);
+        context.startService(drinkService);
     }
 
     public Task<QuerySnapshot> getMemes(){
