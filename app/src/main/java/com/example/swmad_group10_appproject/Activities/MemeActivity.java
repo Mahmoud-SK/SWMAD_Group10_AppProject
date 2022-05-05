@@ -14,10 +14,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 
 import java.util.ArrayList;
@@ -64,6 +66,16 @@ public class MemeActivity extends AppCompatActivity {
         }
 
         setupSwipeDetection();
+
+        btnRanking.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { startRankingActivity(); }
+        });
+    }
+
+    private void startRankingActivity() {
+        Intent intent = new Intent(this, RankingActivity.class);
+        startActivity(intent);
     }
 
     public void setupSwipeDetection(){

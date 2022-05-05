@@ -6,24 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Activities.RankingActivity">
 
-    <RatingBar
-        android:id="@+id/ratingBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:isIndicator="false"
-        android:numStars="5"
-        android:progress="@integer/material_motion_duration_long_1"
-        android:contentDescription="@string/select_the_number_of_stars_to_rate"
-        android:rating="0"
-        android:stepSize="0.5"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <Button
         android:id="@+id/btn2Back"
         android:layout_width="wrap_content"
@@ -38,33 +20,24 @@
         android:id="@+id/recyclerView"
         android:layout_width="409dp"
         android:layout_height="344dp"
+        android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/txtRanking"
-        android:layout_width="178dp"
-        android:layout_height="wrap_content"
+        android:layout_width="199dp"
+        android:layout_height="28dp"
         android:layout_marginTop="32dp"
         android:text="@string/ranking_your_meme"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="115dp"
-        android:layout_height="134dp"
-        android:layout_marginTop="8dp"
-        android:contentDescription="@string/meme"
-        app:layout_constraintBottom_toTopOf="@+id/ratingBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtRanking"
-        tools:ignore="ImageContrastCheck"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.228" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
