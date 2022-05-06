@@ -23,10 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -34,8 +31,7 @@ public class MemeActivity extends AppCompatActivity {
 
     private static final String TAG = "MemeActivity";
 
-    private Button btnRanking;
-    private Button btnProfile;
+    private Button btnRanking, btnProfile;
 
     private GestureDetector gesture;
     private MemeViewModel memeVM;

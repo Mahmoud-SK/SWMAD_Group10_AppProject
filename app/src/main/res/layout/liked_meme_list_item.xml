@@ -18,8 +18,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/LikedMemeListItemView"
-            android:layout_width="405dp"
-            android:layout_height="143dp">
+            android:layout_width="match_parent"
+            android:layout_height="145dp">
 
             <ImageView
                 android:id="@+id/img_likedMemeListItem"
@@ -36,26 +36,42 @@
             <TextView
                 android:id="@+id/txt_authorName"
                 android:layout_width="110dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="156dp"
-                android:text="AuthorName"
+                android:layout_height="25dp"
+                android:hint="AuthorName"
                 android:textStyle="italic"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.141" />
+                app:layout_constraintEnd_toEndOf="@+id/txt_title_authorName"
+                app:layout_constraintStart_toStartOf="@+id/txt_title_authorName"
+                tools:layout_editor_absoluteY="69dp" />
 
             <TextView
-                android:id="@+id/txt_memeText"
-                android:layout_width="232dp"
-                android:layout_height="58dp"
-                android:text="MemeText"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:id="@+id/txt_memeScore"
+                android:layout_width="99dp"
+                android:layout_height="25dp"
+                android:hint="Score"
+                app:layout_constraintEnd_toEndOf="@+id/txt_title_score"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/txt_title_score"
+                tools:layout_editor_absoluteY="69dp" />
+
+            <TextView
+                android:id="@+id/txt_title_authorName"
+                android:layout_width="110dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="AuthorName"
+                app:layout_constraintStart_toEndOf="@+id/img_likedMemeListItem"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txt_title_score"
+                android:layout_width="99dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="16dp"
+                android:text="Score"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.901"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.729" />
+                app:layout_constraintStart_toEndOf="@+id/txt_title_authorName"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

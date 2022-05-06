@@ -3,6 +3,8 @@ package com.example.swmad_group10_appproject.Activities;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,6 +14,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.swmad_group10_appproject.Adapter.LikedMemeAdapter;
 import com.example.swmad_group10_appproject.Models.Meme;
 import com.example.swmad_group10_appproject.R;
 import com.example.swmad_group10_appproject.ViewModels.ProfileViewModel;
@@ -19,12 +22,18 @@ import com.example.swmad_group10_appproject.ViewModels.RegisterViewModel;
 
 import java.io.IOException;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapter.ILikedMemeClickedListener {
 
     Button btn_createMeme, btn_uploadMeme;
-    ProfileViewModel vm;
-    private static int RESULT_LOAD_IMAGE = 1;
+
     private Meme newMeme;
+
+    ProfileViewModel vm;
+
+    RecyclerView recyclerLikedMemeList;
+    RecyclerView.LayoutManager layoutManager;
+
+    LikedMemeAdapter likedMemeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +42,18 @@ public class ProfileActivity extends AppCompatActivity {
 
         btn_uploadMeme = findViewById(R.id.btn_uploadMeme);
         btn_createMeme = findViewById(R.id.btn_CreateMeme);
+
+
+        recyclerLikedMemeList = findViewById(R.id.rcv_liked_meme_list);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerLikedMemeList.setLayoutManager(layoutManager);
+
+        likedMemeAdapter = new LikedMemeAdapter(this);
+        recyclerLikedMemeList.setAdapter(likedMemeAdapter);
+
         vm = new ViewModelProvider(this).get(ProfileViewModel.class);
+
+
 
         btn_uploadMeme.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,5 +101,10 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    @Override
+    public void onLikedMemeDetailClicked(int index) {
+
     }
 }
