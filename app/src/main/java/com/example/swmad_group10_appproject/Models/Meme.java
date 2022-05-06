@@ -1,10 +1,15 @@
 package com.example.swmad_group10_appproject.Models;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.database.Exclude;
+
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.Map;
 
 public class Meme {
     public Meme(String topText, String bottomText, String memeImgURL, double latitude,
-                double longitude, int userId, int score, String key) {
+                double longitude, int userId, int score) {
         this.topText = topText;
         this.bottomText = bottomText;
         this.memeImgURL = memeImgURL;
@@ -12,7 +17,6 @@ public class Meme {
         this.longitude = longitude;
         this.userId = userId;
         this.score = score;
-        this.key = key;
     }
 
     public Meme(){}
@@ -45,6 +49,11 @@ public class Meme {
         return score;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    @Exclude
     public String getKey() {
         return key;
     }
@@ -82,6 +91,10 @@ public class Meme {
         this.key = key;
     }
 
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     private String topText;
     private String bottomText;
     private String memeImgURL;
@@ -89,7 +102,9 @@ public class Meme {
     private double longitude;
     private int userId;
     private int score;
+    private Date date;
     @Exclude
     private String key;
+
 
 }
