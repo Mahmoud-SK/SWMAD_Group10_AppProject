@@ -10,6 +10,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.swmad_group10_appproject.Activities.LoginActivity;
 import com.example.swmad_group10_appproject.Activities.MainActivity;
@@ -33,6 +35,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +52,8 @@ public class Repository {
     StorageReference storageRef;
     DatabaseReference databaseReference;
 
+    private MutableLiveData<List<Meme>> memeList = new MutableLiveData<>();
+
     public static Repository getInstance(Application app) {
         if (instance == null) {
             instance = new Repository(app);
@@ -63,6 +68,8 @@ public class Repository {
         storage = FirebaseStorage.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("Memes");
     }
+
+    public LiveData<List<Meme>> getUserLikedMeme(){return memeList;}
 
     public void registerUser(String email, String password, String username) {
 
@@ -178,6 +185,24 @@ public class Repository {
              }
          });*/
     }
+
+    public Task<QuerySnapshot> getUserLikeMemes(){
+
+        return firebaseStore.collection("Memes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    memeList.setValue(new ArrayList<>());
+
+                    Log.d(TAG, "get memes from firebase: " + task.getResult().getDocuments());
+                }
+                else {
+                    Log.e(TAG, "error getting memes from firebase: ", task.getException());
+                }
+            }
+        });
+    }
+
 
 
 }

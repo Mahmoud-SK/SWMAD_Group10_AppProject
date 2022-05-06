@@ -14,10 +14,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.model.Document;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 
 import java.util.ArrayList;
@@ -64,6 +66,14 @@ public class MemeActivity extends AppCompatActivity {
         }
 
         setupSwipeDetection();
+
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MemeActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void setupSwipeDetection(){
