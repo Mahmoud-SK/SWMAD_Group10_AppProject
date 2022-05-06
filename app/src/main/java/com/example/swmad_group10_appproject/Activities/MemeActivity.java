@@ -30,8 +30,7 @@ public class MemeActivity extends AppCompatActivity {
 
     private static final String TAG = "MemeActivity";
 
-    private Button btnRanking;
-    private Button btnProfile;
+    private Button btnRanking, btnProfile;
 
     private GestureDetector gesture;
     private MemeViewModel memeVM;
@@ -53,7 +52,7 @@ public class MemeActivity extends AppCompatActivity {
 
         btnProfile = findViewById(R.id.btnMemeGoToProfile);
         btnRanking = findViewById(R.id.btnMemeGoToRanking);
-
+        
         animIn = R.anim.no_animation;
         animOut = R.anim.no_animation;
         getMemes();
@@ -71,6 +70,18 @@ public class MemeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) { startRankingActivity(); }
         });
+
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startProfileActivity();
+            }
+        });
+    }
+
+    private void startProfileActivity() {
+        Intent profileIntent = new Intent(this, ProfileActivity.class);
+        startActivity(profileIntent);
     }
 
     private void startRankingActivity() {

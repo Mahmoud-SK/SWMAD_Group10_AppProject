@@ -37,6 +37,7 @@ import android.location.LocationManager;
 
 public class MemeBuilderActivity extends AppCompatActivity implements LocationListener{
 
+    private static final String TAG = "MemeBuilderActivity";
     Button btn_openCamera, btn_editMeme;
     ImageButton btn_imgUpload;
     ImageView img_camera;
@@ -106,15 +107,15 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
             @Override
             public void onClick(View view) {
                 Log.d("MemeBuilderActivity", "Test state");
-                if (btn_editMeme.isPressed()){
+                if (captureImage != null){
                     Meme newMeme = new Meme();
-                    newMeme = new Meme(txt_edit_top.getText().toString(),txt_edit_bottom.getText().toString(),"",latitude,longitude,0,0);
+                    newMeme = new Meme(txt_edit_top.getText().toString(),txt_edit_bottom.getText().toString(),"",latitude,longitude,0,0,"0");
 
                     try {
                         vm.uploadMeme(newMeme,captureImage);        //Upload meme on database
                         SaveToast();
                     }catch (Exception e){
-                        //Error Message
+                        Log.e(TAG, "onClick: ", e );
                     }
                     finish();
                     Log.d("MemeBuilderActivity", "The meme is saved in database");
@@ -122,8 +123,8 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
             }
         });
 
-        //Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
-        //Check the android version
+        // Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
+        // Check the android version
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
