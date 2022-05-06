@@ -1,7 +1,10 @@
 package com.example.swmad_group10_appproject.Models;
 
+import com.google.firebase.database.Exclude;
+
 public class Meme {
-    public Meme(String topText, String bottomText, String memeImgURL, double latitude, double longitude, int userId, int score) {
+    public Meme(String topText, String bottomText, String memeImgURL, double latitude,
+                double longitude, int userId, int score, String key) {
         this.topText = topText;
         this.bottomText = bottomText;
         this.memeImgURL = memeImgURL;
@@ -9,6 +12,7 @@ public class Meme {
         this.longitude = longitude;
         this.userId = userId;
         this.score = score;
+        this.key = key;
     }
 
     public Meme(){}
@@ -41,6 +45,10 @@ public class Meme {
         return score;
     }
 
+    public String getKey() {
+        return key;
+    }
+
 
     public void setTopText(String topText) {
         this.topText = topText;
@@ -70,6 +78,10 @@ public class Meme {
         this.score = score;
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     private String topText;
     private String bottomText;
     private String memeImgURL;
@@ -77,5 +89,7 @@ public class Meme {
     private double longitude;
     private int userId;
     private int score;
+    @Exclude
+    private String key;
 
 }

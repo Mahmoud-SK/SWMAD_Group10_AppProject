@@ -1,20 +1,16 @@
 package com.example.swmad_group10_appproject.Persistance;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.swmad_group10_appproject.Activities.LoginActivity;
-import com.example.swmad_group10_appproject.Activities.MainActivity;
 import com.example.swmad_group10_appproject.Models.Meme;
 import com.example.swmad_group10_appproject.Services.MemeService;
 import com.google.android.gms.tasks.Continuation;
@@ -24,6 +20,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
@@ -37,7 +34,6 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -49,7 +45,6 @@ public class Repository {
     private static Repository instance;
     private Context applicationContext;
     FirebaseStorage storage;
-    StorageReference storageRef;
     DatabaseReference databaseReference;
 
     private MutableLiveData<List<Meme>> memeList = new MutableLiveData<>();
@@ -67,6 +62,7 @@ public class Repository {
         firebaseStore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("Memes");
+
     }
 
     public LiveData<List<Meme>> getUserLikedMeme(){return memeList;}
@@ -104,17 +100,8 @@ public class Repository {
         });
     }
 
-    public void loginUser(String email, String password) {
-        firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Log.d("Repository", "Logged in! Welcome to UMeme");
-                } else {
-                    Log.d("Repository", "Error! " + task.getException().getMessage());
-                }
-            }
-        });
+    public Task<AuthResult> loginUser(String email, String password) {
+        return firebaseAuth.signInWithEmailAndPassword(email,password);
     }
 
     public void uploadMeme(Meme meme, Bitmap image){
@@ -164,6 +151,10 @@ public class Repository {
             }
         });
 
+    }
+
+    public FirebaseUser getCurrentUser() {
+        return firebaseAuth.getCurrentUser();
     }
 
     public void startForegroundService(Context context) {

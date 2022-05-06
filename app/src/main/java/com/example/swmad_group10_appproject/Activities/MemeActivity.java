@@ -10,9 +10,9 @@ import com.example.swmad_group10_appproject.R;
 import com.example.swmad_group10_appproject.ViewModels.MemeViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.model.Document;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -67,13 +67,15 @@ public class MemeActivity extends AppCompatActivity {
 
         setupSwipeDetection();
 
-        btnProfile.setOnClickListener(new View.OnClickListener() {
+        btnRanking.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MemeActivity.this, ProfileActivity.class);
-                startActivity(intent);
-            }
+            public void onClick(View view) { startRankingActivity(); }
         });
+    }
+
+    private void startRankingActivity() {
+        Intent intent = new Intent(this, RankingActivity.class);
+        startActivity(intent);
     }
 
     public void setupSwipeDetection(){
@@ -166,7 +168,9 @@ public class MemeActivity extends AppCompatActivity {
                     (double) data.get("latitude"),
                     (double) data.get("longitude"),
                     Integer.parseInt(String.valueOf(data.get("userId"))),
-                    Integer.parseInt(String.valueOf(data.get("score"))));
+                    Integer.parseInt(String.valueOf(data.get("score"))),
+                    snapshot.getId()
+            );
 
             tempList.add(tempMeme);
         }
