@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 
+import com.example.swmad_group10_appproject.Models.User;
 import com.example.swmad_group10_appproject.Persistance.Repository;
 
 public class RegisterViewModel extends AndroidViewModel {
@@ -15,8 +16,8 @@ public class RegisterViewModel extends AndroidViewModel {
         repository = Repository.getInstance(app);
     }
 
-    public void registerUser(String email, String password, String username)
+    public void registerUser(User user)
     {
-        repository.registerUser(email,password,username);
+        repository.registerUser(user);
     }
 }

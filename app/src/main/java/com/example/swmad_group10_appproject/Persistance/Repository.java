@@ -71,31 +71,26 @@ public class Repository {
 
     public LiveData<List<Meme>> getUserLikedMeme(){return memeList;}
 
-    public void registerUser(String email, String password, String username) {
+    // Inspiration to make the Register-system is taken from: https://www.youtube.com/watch?v=TwHmrZxiPA8
+    public void registerUser(User user) {
 
         // Registering the user in firebase
-        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    // Toast.makeText(applicationContext, "Account has been created!", Toast.LENGTH_SHORT).show();
-                    Map<String, Object> user = new HashMap<>();
-                    user.put("Username", username);
-                    user.put("Email", email);
-                    user.put("Password", password);
-
                     firebaseStore.collection("users")
                             .add(user)
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
-                                    Log.d("Repository", "DocumentSnapshot added with ID: " + documentReference.getId());
+                                    Log.d("Repository", "User added: " + documentReference.getId());
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Log.w("Repository", "Error adding document", e);
+                                    Log.w("Repository", "Error adding user document", e);
                                 }
                             });
 
@@ -201,56 +196,6 @@ public class Repository {
                 }
             }
         });
-    }
-
-
-    public void updateRadius (User user){
-        if (user != null){
-            user.Email = firebaseAuth.getCurrentUser().getEmail();
-            user.Username = firebaseAuth.getCurrentUser().getDisplayName();
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            byte [] data = outputStream.toByteArray();
-            String path = "UserModel/";
-            StorageReference storageRef = storage.getReference(path);
-            StorageMetadata metaData = new StorageMetadata.Builder().build();
-            UploadTask uploadTask = storageRef.putBytes(data,metaData);
-
-            Task<Uri> getDownloadURI = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
-                    return storageRef.getDownloadUrl();
-                }
-            });
-
-            getDownloadURI.addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-
-                    firebaseStore.collection("UserModel")
-                            .add(user)
-                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    Log.d("Repository", "DocumentSnapshot added userModel with ID: " + documentReference.getId());
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("Repository", "Error adding user2 document", e);
-                                }
-                            });
-
-                }
-            });
-        }
-
-
-
     }
 
 }

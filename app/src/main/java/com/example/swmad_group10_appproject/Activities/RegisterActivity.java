@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.swmad_group10_appproject.Models.User;
 import com.example.swmad_group10_appproject.ViewModels.RegisterViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -65,11 +66,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    // Inspiration to make the Login-system is taken from: https://www.youtube.com/watch?v=TwHmrZxiPA8
     private void validateData() {
         // Getting the supplied data
         String email = txtEmail.getText().toString();
         String password = txtPassword.getText().toString();
         String username = txtUsername.getText().toString();
+        int radius = 20;
 
         // Checking if fields are empty
         if (TextUtils.isEmpty(username)){
@@ -87,9 +90,11 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+        User user = new User(email,password,username,radius);
+
         // Authenticating the User
         try {
-            vm.registerUser(email,password,username);
+            vm.registerUser(user);
             Intent mainIntent = new Intent(RegisterActivity.this, MemeActivity.class);
             startActivity(mainIntent);
 

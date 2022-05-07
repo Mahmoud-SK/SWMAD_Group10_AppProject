@@ -122,7 +122,7 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
                 Log.d("MemeBuilderActivity", "Test state");
                 if (captureImage != null && editButtonCount!=0){
                     newMeme = new Meme();
-                    newMeme = new Meme(txt_edit_top.getText().toString(),txt_edit_bottom.getText().toString(),"",latitude,longitude,0,0,"0");
+                    newMeme = new Meme(txt_edit_top.getText().toString(),txt_edit_bottom.getText().toString(),"",latitude,longitude,0,0);
 
                     try {
                         vm.uploadMeme(newMeme,captureImage);        //Upload meme on database
