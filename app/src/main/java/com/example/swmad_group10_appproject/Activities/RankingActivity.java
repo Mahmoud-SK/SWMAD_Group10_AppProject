@@ -112,8 +112,8 @@ public class RankingActivity extends AppCompatActivity {
         }
 
     private void EventChangeListener() {
-        db.collection("Memes").orderBy("score", Query.Direction.DESCENDING)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+        rankingViewModel.Scoregetter().addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
 
