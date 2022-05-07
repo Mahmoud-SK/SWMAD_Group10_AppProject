@@ -3,6 +3,8 @@ package com.example.swmad_group10_appproject.ViewModels;
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.swmad_group10_appproject.Models.Meme;
 import com.example.swmad_group10_appproject.Persistance.Repository;
@@ -10,13 +12,27 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MemeViewModel extends AndroidViewModel {
 
     private Repository repository;
+    private MutableLiveData<List<Meme>> memes;
 
     public MemeViewModel(Application app) {
         super(app);
         repository = Repository.getInstance(app);
+        memes = new MutableLiveData<List<Meme>>();
+        memes.setValue(new ArrayList<Meme>());
+    }
+
+    public LiveData<List<Meme>> getMemeList(){
+        return memes;
+    }
+
+    public void getMemesWithinRadius(int radius){
+        repository.getMemesWithinRadius(memes, radius);
     }
 
     public Task<QuerySnapshot> getMemes(){

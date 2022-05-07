@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -179,6 +180,37 @@ public class Repository {
                  }
              }
          });*/
+    }
+
+    public void getMemesWithinRadius(MutableLiveData<List<Meme>> result, int radius){
+        //Get result from firbase back to a meme model
+        // https://www.geeksforgeeks.org/how-to-update-data-in-firebase-firestore-in-android/
+        List<Meme> tempList = new ArrayList<Meme>();
+        firebaseStore.collection("Memes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()){
+                    Log.d(TAG, "onSuccess getting mems: ");
+                    List<DocumentSnapshot> docSnapshots = queryDocumentSnapshots.getDocuments();
+                    for (DocumentSnapshot docSnapshot : queryDocumentSnapshots.getDocuments()) {
+                        Meme tempMeme = docSnapshot.toObject(Meme.class);
+                        tempMeme.setKey(docSnapshot.getId());
+                        //android.location.Location.distanceBetween()
+                        if (true){
+                            tempList.add(tempMeme);
+                        }
+                    }
+                    result.setValue(tempList);
+                }
+
+                //android.location.Location.distanceBetween();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "onFailure getting memes: ", e);
+            }
+        });
     }
 
     public void updateMeme(Meme meme){
