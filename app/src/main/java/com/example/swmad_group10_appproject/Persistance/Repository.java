@@ -34,6 +34,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,6 +136,7 @@ public class Repository {
             public void onComplete(@NonNull Task<Uri> task) {
               Uri downloadURI = task.getResult();
 
+              meme.setDate(new Date());
               meme.setMemeImgURL(downloadURI.toString());
 
               firebaseStore.collection("Memes")
@@ -177,6 +180,10 @@ public class Repository {
                  }
              }
          });*/
+    }
+
+    public void updateMeme(Meme meme){
+        firebaseStore.collection("Memes").document(meme.getKey()).set(meme);
     }
 
     public Task<QuerySnapshot> getUserLikeMemes(){
