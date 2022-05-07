@@ -10,6 +10,9 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -40,6 +43,9 @@ public class RankingActivity extends AppCompatActivity {
     FirebaseFirestore db;
     private RankingViewModel rankingViewModel;
     ProgressDialog progressDialog;
+    String[] items = {"Today","Week","Month","Year"};
+    AutoCompleteTextView autoCompleteTextView;
+    ArrayAdapter<String> adapterItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +56,6 @@ public class RankingActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Data fetching...");
         progressDialog.show();
-
         setupUI();
     }
 
@@ -59,6 +64,33 @@ public class RankingActivity extends AppCompatActivity {
         rankingViewModel = new ViewModelProvider(this).get(RankingViewModel.class);
 
         btn2Back = findViewById(R.id.btn2Back);
+
+        autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
+        adapterItems = new ArrayAdapter<String>(this,R.layout.dropdown_item,items);
+        autoCompleteTextView.setAdapter(adapterItems);
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String item = adapterView.getItemAtPosition(position).toString();
+                //Toast.makeText(getApplicationContext(),"Item:"+item,Toast.LENGTH_SHORT).show();
+
+                switch (position){
+                    case 0:
+                        Toast.makeText(getApplicationContext(),"Today",Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
+                        Toast.makeText(getApplicationContext(),"Week",Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        Toast.makeText(getApplicationContext(),"Month",Toast.LENGTH_SHORT).show();
+                        break;
+                    case 3:
+                        Toast.makeText(getApplicationContext(),"Year",Toast.LENGTH_SHORT).show();
+                        break;
+
+                }
+            }
+        });
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
