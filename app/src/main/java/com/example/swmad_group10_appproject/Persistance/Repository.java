@@ -181,6 +181,10 @@ public class Repository {
          });*/
     }
 
+    public void updateMeme(Meme meme){
+        firebaseStore.collection("Memes").document(meme.getKey()).set(meme);
+    }
+
     public Task<QuerySnapshot> getUserLikeMemes(){
 
         return firebaseStore.collection("Memes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

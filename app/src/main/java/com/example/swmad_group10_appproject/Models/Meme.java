@@ -21,6 +21,10 @@ public class Meme {
 
     public Meme(){}
 
+    public void updateScore(int addedValue){
+        score += addedValue;
+    }
+
     public String getTopText() {
         return topText;
     }
