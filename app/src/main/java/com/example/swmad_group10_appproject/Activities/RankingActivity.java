@@ -73,9 +73,9 @@ public class RankingActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String item = adapterView.getItemAtPosition(position).toString();
                 //Toast.makeText(getApplicationContext(),"Item:"+item,Toast.LENGTH_SHORT).show();
-
                 switch (position){
                     case 0:
+
                         Toast.makeText(getApplicationContext(),"Today",Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
