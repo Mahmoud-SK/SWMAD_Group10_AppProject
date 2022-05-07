@@ -34,23 +34,34 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
+import java.util.List;
+
 
 public class MemeBuilderActivity extends AppCompatActivity implements LocationListener{
 
     private static final String TAG = "MemeBuilderActivity";
+
     Button btn_openCamera, btn_editMeme;
     ImageButton btn_imgUpload;
     ImageView img_camera;
     TextView txt_edit_bottom, txt_edit_top;
+    TextView txt_Location_test; //Test
 
     Bitmap captureImage;
+    Meme newMeme;
 
     MemeBuilderViewModel vm;
 
     protected LocationManager locationManager;
     protected double latitude,longitude;
     private static final int PERMISSION_REQUEST_CODE = 1;
-    TextView txt_Location_test;
+
+    int editButtonCount;
+
+    @Override
+    public void onLocationChanged(@NonNull List<Location> locations) {
+        LocationListener.super.onLocationChanged(locations);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,9 +107,11 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
         btn_editMeme.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                editButtonCount = 0;
                 if (captureImage!=null){
                     txt_edit_bottom.setVisibility(View.VISIBLE);
                     txt_edit_top.setVisibility(View.VISIBLE);
+                    editButtonCount+=1;
                 }
             }
         });
@@ -107,8 +120,8 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
             @Override
             public void onClick(View view) {
                 Log.d("MemeBuilderActivity", "Test state");
-                if (captureImage != null){
-                    Meme newMeme = new Meme();
+                if (captureImage != null && editButtonCount!=0){
+                    newMeme = new Meme();
                     newMeme = new Meme(txt_edit_top.getText().toString(),txt_edit_bottom.getText().toString(),"",latitude,longitude,0,0,"0");
 
                     try {
@@ -171,10 +184,9 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        txt_Location_test.setText("Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-
+        txt_Location_test.setText("Latitude:" + latitude + ", Longitude:" + longitude);
     }
 
     @Override

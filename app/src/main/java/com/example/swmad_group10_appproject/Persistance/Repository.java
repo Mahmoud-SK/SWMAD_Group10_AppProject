@@ -12,6 +12,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.swmad_group10_appproject.Models.Meme;
+import com.example.swmad_group10_appproject.Models.User;
 import com.example.swmad_group10_appproject.Services.MemeService;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -196,5 +197,53 @@ public class Repository {
     }
 
 
+    public void updateRadius (User user){
+        if (user != null){
+            user.Email = firebaseAuth.getCurrentUser().getEmail();
+            user.Username = firebaseAuth.getCurrentUser().getDisplayName();
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            byte [] data = outputStream.toByteArray();
+            String path = "UserModel/";
+            StorageReference storageRef = storage.getReference(path);
+            StorageMetadata metaData = new StorageMetadata.Builder().build();
+            UploadTask uploadTask = storageRef.putBytes(data,metaData);
+
+            Task<Uri> getDownloadURI = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    return storageRef.getDownloadUrl();
+                }
+            });
+
+            getDownloadURI.addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+
+                    firebaseStore.collection("UserModel")
+                            .add(user)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    Log.d("Repository", "DocumentSnapshot added userModel with ID: " + documentReference.getId());
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("Repository", "Error adding user2 document", e);
+                                }
+                            });
+
+                }
+            });
+        }
+
+
+
+    }
 
 }

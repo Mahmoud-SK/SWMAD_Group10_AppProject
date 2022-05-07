@@ -1,39 +1,64 @@
 package com.example.swmad_group10_appproject.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.swmad_group10_appproject.Adapter.LikedMemeAdapter;
 import com.example.swmad_group10_appproject.Models.Meme;
+import com.example.swmad_group10_appproject.Models.User;
 import com.example.swmad_group10_appproject.R;
 import com.example.swmad_group10_appproject.ViewModels.ProfileViewModel;
 import com.example.swmad_group10_appproject.ViewModels.RegisterViewModel;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
-public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapter.ILikedMemeClickedListener {
+public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapter.ILikedMemeClickedListener, LocationListener {
 
     Button btn_createMeme, btn_uploadMeme;
+    Spinner spr_profile;
 
     private Meme newMeme;
+    private User user;
 
     ProfileViewModel vm;
 
     RecyclerView recyclerLikedMemeList;
     RecyclerView.LayoutManager layoutManager;
-
     LikedMemeAdapter likedMemeAdapter;
+
+    public final String TAG = "ProfileActivity";
+
+    protected LocationManager locationManager;
+    protected double latitude,longitude;
+    private static final int PERMISSION_REQUEST_CODE = 1;
+
+
+    ArrayList<String> arrayList = new ArrayList<>();
+    int radius;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +67,7 @@ public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapt
 
         btn_uploadMeme = findViewById(R.id.btn_uploadMeme);
         btn_createMeme = findViewById(R.id.btn_CreateMeme);
+        spr_profile = findViewById(R.id.spr_profile);
 
 
         recyclerLikedMemeList = findViewById(R.id.rcv_liked_meme_list);
@@ -54,7 +80,6 @@ public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapt
         vm = new ViewModelProvider(this).get(ProfileViewModel.class);
 
 
-
         btn_uploadMeme.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,13 +88,66 @@ public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapt
         });
 
         btn_createMeme.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-              Intent intent = new Intent(ProfileActivity.this, MemeBuilderActivity.class);
-              startActivity(intent);
-           }
-      }
+              @Override
+              public void onClick(View view) {
+                  Intent intent = new Intent(ProfileActivity.this, MemeBuilderActivity.class);
+                  startActivity(intent);
+              }
+          }
         );
+
+        arrayList.add("5");
+        arrayList.add("10");
+        arrayList.add("15");
+        arrayList.add("20");
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                arrayList
+        );
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spr_profile.setAdapter(arrayAdapter);
+        spr_profile.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String itemValue = adapterView.getItemAtPosition(i).toString();
+                radius = Integer.parseInt(itemValue);
+                if (radius!=0){
+                    //Update Radius
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        // Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
+        // Check the android version
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_DENIED) {
+
+                Log.d("permission", "permission denied to ACCESS_FINE_LOCATION - requesting it");
+                String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+
+                requestPermissions(permissions, PERMISSION_REQUEST_CODE);
+
+            }
+        }
+
+        //Reference: https://javapapers.com/android/get-current-location-in-android/
+        // Get current location
+        try {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) this);
+        }catch (Exception e){
+
+        }
+
     }
 
     //Reference: https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
@@ -94,10 +172,13 @@ public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapt
                 Bitmap bitmap = null;
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImgUri);
+                    if (bitmap!=null){
+                        vm.uploadMeme(newMeme,bitmap);
+                        SaveToast();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                vm.uploadMeme(newMeme,bitmap);
 
             }
         }
@@ -106,5 +187,37 @@ public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapt
     @Override
     public void onLikedMemeDetailClicked(int index) {
 
+    }
+
+
+    private void SaveToast(){
+        CharSequence text = "You have uploaded your meme from the gallery !";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(this, text, duration);
+        toast.show();
+    }
+
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        Log.d(TAG,"Get current location: " +latitude + " " + longitude );
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        LocationListener.super.onStatusChanged(provider, status, extras);
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+        LocationListener.super.onProviderEnabled(provider);
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+        LocationListener.super.onProviderDisabled(provider);
     }
 }
