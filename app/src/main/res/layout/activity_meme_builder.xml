@@ -87,4 +87,15 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/img_camera"
         app:layout_constraintTop_toTopOf="@+id/img_camera" />
+
+    <TextView
+        android:id="@+id/txt_location_test"
+        android:layout_width="335dp"
+        android:layout_height="46dp"
+        android:layout_marginBottom="32dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/btn_editMeme"
+        app:layout_constraintEnd_toEndOf="@+id/txt_edit_bottom"
+        app:layout_constraintHorizontal_bias="0.536"
+        app:layout_constraintStart_toStartOf="@+id/txt_edit_bottom" />
 </androidx.constraintlayout.widget.ConstraintLayout>

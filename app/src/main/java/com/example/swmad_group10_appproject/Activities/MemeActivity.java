@@ -10,6 +10,7 @@ import com.example.swmad_group10_appproject.R;
 import com.example.swmad_group10_appproject.ViewModels.MemeViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -30,8 +31,7 @@ public class MemeActivity extends AppCompatActivity {
 
     private static final String TAG = "MemeActivity";
 
-    private Button btnRanking;
-    private Button btnProfile;
+    private Button btnRanking, btnProfile;
 
     private GestureDetector gesture;
     private MemeViewModel memeVM;
@@ -54,6 +54,21 @@ public class MemeActivity extends AppCompatActivity {
         btnProfile = findViewById(R.id.btnMemeGoToProfile);
         btnRanking = findViewById(R.id.btnMemeGoToRanking);
 
+
+        btnRanking.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchRankingActivity();
+            }
+        });
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchProfileActivity();
+            }
+        });
+
+
         animIn = R.anim.no_animation;
         animOut = R.anim.no_animation;
         getMemes();
@@ -66,16 +81,6 @@ public class MemeActivity extends AppCompatActivity {
         }
 
         setupSwipeDetection();
-
-        btnRanking.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) { startRankingActivity(); }
-        });
-    }
-
-    private void startRankingActivity() {
-        Intent intent = new Intent(this, RankingActivity.class);
-        startActivity(intent);
     }
 
     public void setupSwipeDetection(){
@@ -168,15 +173,30 @@ public class MemeActivity extends AppCompatActivity {
                     (double) data.get("latitude"),
                     (double) data.get("longitude"),
                     Integer.parseInt(String.valueOf(data.get("userId"))),
-                    Integer.parseInt(String.valueOf(data.get("score"))),
-                    snapshot.getId()
+                    Integer.parseInt(String.valueOf(data.get("score")))
             );
+            tempMeme.setKey(snapshot.getId());
+            Log.d(TAG, "outside");
+            if(data.get("date") != null) {
+                Log.d(TAG, "inside");
+                tempMeme.setDate(((Timestamp) data.get("date")).toDate());
+                Log.d(TAG, "date: " + tempMeme.getDate());
+            }
 
             tempList.add(tempMeme);
         }
 
         memes = tempList;
-        Log.d(TAG, "get memes from firebase: " + memes);
+    }
+
+    private void launchProfileActivity(){
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+    }
+
+    private void launchRankingActivity(){
+        Intent intent = new Intent(this, RankingActivity.class);
+        startActivity(intent);
     }
 
     @Override

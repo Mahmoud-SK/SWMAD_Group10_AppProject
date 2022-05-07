@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.swmad_group10_appproject.Models.Meme;
 import com.example.swmad_group10_appproject.Services.MemeService;
@@ -30,7 +32,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -43,6 +49,8 @@ public class Repository {
     private Context applicationContext;
     FirebaseStorage storage;
     DatabaseReference databaseReference;
+
+    private MutableLiveData<List<Meme>> memeList = new MutableLiveData<>();
 
     public static Repository getInstance(Application app) {
         if (instance == null) {
@@ -59,6 +67,8 @@ public class Repository {
         databaseReference = FirebaseDatabase.getInstance().getReference("Memes");
 
     }
+
+    public LiveData<List<Meme>> getUserLikedMeme(){return memeList;}
 
     public void registerUser(String email, String password, String username) {
 
@@ -125,6 +135,7 @@ public class Repository {
             public void onComplete(@NonNull Task<Uri> task) {
               Uri downloadURI = task.getResult();
 
+              meme.setDate(new Date());
               meme.setMemeImgURL(downloadURI.toString());
 
               firebaseStore.collection("Memes")
@@ -169,6 +180,24 @@ public class Repository {
              }
          });*/
     }
+
+    public Task<QuerySnapshot> getUserLikeMemes(){
+
+        return firebaseStore.collection("Memes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    memeList.setValue(new ArrayList<>());
+
+                    Log.d(TAG, "get memes from firebase: " + task.getResult().getDocuments());
+                }
+                else {
+                    Log.e(TAG, "error getting memes from firebase: ", task.getException());
+                }
+            }
+        });
+    }
+
 
 
 }
