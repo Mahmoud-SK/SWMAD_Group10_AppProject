@@ -98,7 +98,12 @@ public class MemeActivity extends AppCompatActivity {
                         final int minSwipeDistance = 100;
                         if (event1.getX() - event2.getX() > minSwipeDistance){
                             Log.d(TAG, "onFling: left");
+                            memes.get(memeIndex).updateScore(-1);
+                            memeVM.UpdateMeme(memes.get(memeIndex));
+                            Log.d(TAG, "onFling: left " + memes.get(memeIndex).getKey());
+                            Log.d(TAG, "onFling: left " + memes.get(memeIndex).getScore());
                             nextMeme(R.anim.fade_in, R.anim.slide_out_left);
+
                             /*getSupportFragmentManager().beginTransaction()
                                     .setCustomAnimations(R.anim.fade_in, R.anim.slide_out_left)
                                     .replace(R.id.container1, MemeFragment.newInstance("top left ged",
@@ -106,6 +111,10 @@ public class MemeActivity extends AppCompatActivity {
                                     .commitNow();*/
                         }
                         else if (event2.getX() - event1.getX() > minSwipeDistance){
+                            memes.get(memeIndex).updateScore(1);
+                            memeVM.UpdateMeme(memes.get(memeIndex));
+                            Log.d(TAG, "onFling: right " + memes.get(memeIndex).getKey());
+                            Log.d(TAG, "onFling: right " + memes.get(memeIndex).getScore());
                             nextMeme(R.anim.fade_in, R.anim.slide_out_right);
                             /*getSupportFragmentManager().beginTransaction()
                                     .setCustomAnimations(R.anim.fade_in, R.anim.slide_out_right)
