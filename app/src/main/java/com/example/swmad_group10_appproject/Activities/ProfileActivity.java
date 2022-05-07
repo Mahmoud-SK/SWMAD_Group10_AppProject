@@ -3,6 +3,7 @@ package com.example.swmad_group10_appproject.Activities;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,17 +27,20 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.swmad_group10_appproject.Adapter.LikedMemeAdapter;
 import com.example.swmad_group10_appproject.Models.Meme;
 import com.example.swmad_group10_appproject.Models.User;
 import com.example.swmad_group10_appproject.R;
 import com.example.swmad_group10_appproject.ViewModels.ProfileViewModel;
-import com.example.swmad_group10_appproject.ViewModels.RegisterViewModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapter.ILikedMemeClickedListener, LocationListener {
+public class ProfileActivity extends AppCompatActivity implements LocationListener {
 
     Button btn_createMeme, btn_uploadMeme;
     Spinner spr_profile;
@@ -48,7 +52,6 @@ public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapt
 
     RecyclerView recyclerLikedMemeList;
     RecyclerView.LayoutManager layoutManager;
-    LikedMemeAdapter likedMemeAdapter;
 
     public final String TAG = "ProfileActivity";
 
@@ -70,13 +73,6 @@ public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapt
         spr_profile = findViewById(R.id.spr_profile);
 
 
-        recyclerLikedMemeList = findViewById(R.id.rcv_liked_meme_list);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerLikedMemeList.setLayoutManager(layoutManager);
-
-        likedMemeAdapter = new LikedMemeAdapter(this);
-        recyclerLikedMemeList.setAdapter(likedMemeAdapter);
-
         vm = new ViewModelProvider(this).get(ProfileViewModel.class);
 
 
@@ -96,34 +92,60 @@ public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapt
           }
         );
 
-        arrayList.add("5");
-        arrayList.add("10");
-        arrayList.add("15");
-        arrayList.add("20");
+        SpinnerSetup();
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item,
-                arrayList
-        );
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        LocationSetup();
 
-        spr_profile.setAdapter(arrayAdapter);
-        spr_profile.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String itemValue = adapterView.getItemAtPosition(i).toString();
-                radius = Integer.parseInt(itemValue);
-                if (radius!=0){
-                    //Update Radius
+        PreloadRadius();
+
+    }
+
+
+
+
+    //Reference: https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+    private void getImageFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+
+        startActivityForResult(intent.createChooser(intent, "Select Picture"), 200);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // this function is triggered when user
+        // selects the image from the imageChooser
+        if (resultCode == RESULT_OK){
+            if(requestCode==200){
+                final Uri selectedImgUri = data.getData();
+                newMeme = new Meme("","","",0.0,0.0,0,0);
+                // https://stackoverflow.com/questions/3879992/how-to-get-bitmap-from-an-uri
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImgUri);
+                    if (bitmap!=null){
+                        vm.uploadMeme(newMeme,bitmap);
+                        SaveToast();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        });
+        }
+    }
 
+
+    private void SaveToast(){
+        CharSequence text = "You have uploaded your meme from the gallery !";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(this, text, duration);
+        toast.show();
+    }
+
+    private void LocationSetup() {
         // Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
         // Check the android version
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -147,54 +169,6 @@ public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapt
         }catch (Exception e){
 
         }
-
-    }
-
-    //Reference: https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
-    private void getImageFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-
-        startActivityForResult(intent.createChooser(intent, "Select Picture"), 200);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // this function is triggered when user
-        // selects the image from the imageChooser
-        if (resultCode == RESULT_OK){
-            if(requestCode==200){
-                final Uri selectedImgUri = data.getData();
-                newMeme = new Meme("Text","Text","",0.0,0.0,0,0);
-                // https://stackoverflow.com/questions/3879992/how-to-get-bitmap-from-an-uri
-                Bitmap bitmap = null;
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImgUri);
-                    if (bitmap!=null){
-                        vm.uploadMeme(newMeme,bitmap);
-                        SaveToast();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
-    }
-
-    @Override
-    public void onLikedMemeDetailClicked(int index) {
-
-    }
-
-
-    private void SaveToast(){
-        CharSequence text = "You have uploaded your meme from the gallery !";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(this, text, duration);
-        toast.show();
     }
 
 
@@ -202,7 +176,7 @@ public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapt
     public void onLocationChanged(@NonNull Location location) {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-        Log.d(TAG,"Get current location: " +latitude + " " + longitude );
+        //Log.d(TAG,"Get current location: " +latitude + " " + longitude );
 
     }
 
@@ -220,4 +194,46 @@ public class ProfileActivity extends AppCompatActivity implements LikedMemeAdapt
     public void onProviderDisabled(@NonNull String provider) {
         LocationListener.super.onProviderDisabled(provider);
     }
+
+    public void SpinnerSetup(){
+        arrayList.add("5");
+        arrayList.add("10");
+        arrayList.add("15");
+        arrayList.add("20");
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                arrayList
+        );
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spr_profile.setAdapter(arrayAdapter);
+        spr_profile.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String itemValue = adapterView.getItemAtPosition(i).toString();
+                radius = Integer.parseInt(itemValue);
+                setRadius(radius);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void PreloadRadius() {
+        vm.getCurrentRadius().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+
+            }
+        });
+    }
+
+    public void setRadius(int radius){
+
+    }
+
 }

@@ -19,13 +19,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
@@ -181,21 +184,30 @@ public class Repository {
         firebaseStore.collection("Memes").document(meme.getKey()).set(meme);
     }
 
-    public Task<QuerySnapshot> getUserLikeMemes(){
 
-        return firebaseStore.collection("Memes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    public LiveData<Integer> getCurrentRadius(){
+        String email = firebaseAuth.getCurrentUser().getEmail();
+        MutableLiveData<Integer> result = new MutableLiveData<Integer>();
+
+        firebaseStore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()){
-                    memeList.setValue(new ArrayList<>());
-
-                    Log.d(TAG, "get memes from firebase: " + task.getResult().getDocuments());
-                }
-                else {
-                    Log.e(TAG, "error getting memes from firebase: ", task.getException());
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()){
+                    for (DocumentSnapshot document: queryDocumentSnapshots.getDocuments()){
+                        User user = document.toObject(User.class);
+                        if (email.equals(user.getEmail())){
+                            result.setValue(user.getRadius());
+                        }
+                    }
                 }
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "onFailure: ",e );
+            }
         });
+        return result;
     }
 
 }

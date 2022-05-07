@@ -22,9 +22,6 @@
             android:exported="true"></service>
 
         <activity
-            android:name=".Activities.LikedMemeDetailActivity"
-            android:exported="false" />
-        <activity
             android:name=".Activities.MemeActivity"
             android:exported="false"/>
         <activity

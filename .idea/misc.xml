@@ -11,7 +11,7 @@
         <entry key="..\:/Users/laohu/AndroidStudioProjects/SWMAD_Group10_AppProject/app/src/main/res/layout/activity_main.xml" value="0.2418478260869565" />
         <entry key="..\:/Users/laohu/AndroidStudioProjects/SWMAD_Group10_AppProject/app/src/main/res/layout/activity_meme.xml" value="0.16799999999999998" />
         <entry key="..\:/Users/laohu/AndroidStudioProjects/SWMAD_Group10_AppProject/app/src/main/res/layout/activity_meme_builder.xml" value="0.264" />
-        <entry key="..\:/Users/laohu/AndroidStudioProjects/SWMAD_Group10_AppProject/app/src/main/res/layout/activity_profile.xml" value="0.5" />
+        <entry key="..\:/Users/laohu/AndroidStudioProjects/SWMAD_Group10_AppProject/app/src/main/res/layout/activity_profile.xml" value="0.4466666666666667" />
         <entry key="..\:/Users/laohu/AndroidStudioProjects/SWMAD_Group10_AppProject/app/src/main/res/layout/activity_ranking.xml" value="0.35190217391304346" />
         <entry key="..\:/Users/laohu/AndroidStudioProjects/SWMAD_Group10_AppProject/app/src/main/res/layout/activity_recycler_view_liked_meme_list.xml" value="0.2604166666666667" />
         <entry key="..\:/Users/laohu/AndroidStudioProjects/SWMAD_Group10_AppProject/app/src/main/res/layout/liked_meme_list_item.xml" value="0.38734896943852165" />
@@ -23,8 +23,7 @@
         <entry key="..\:/Users/olek0/Documents/Semestr/Semester_6/MobileAppPr/app/src/main/res/layout/activity_meme.xml" value="0.5494791666666666" />
         <entry key="..\:/Users/olek0/Documents/Semestr/Semester_6/MobileAppPr/app/src/main/res/layout/activity_meme_builder.xml" value="0.5494791666666666" />
         <entry key="..\:/Users/olek0/Documents/Semestr/Semester_6/MobileAppPr/app/src/main/res/layout/activity_profile.xml" value="0.5494791666666666" />
-        <entry key="..\:/Users/olek0/Documents/Semestr/Semester_6/MobileAppPr/app/src/main/res/layout/activity_ranking.xml" value="0.5" />
-        <entry key="..\:/Users/olek0/Documents/Semestr/Semester_6/MobileAppPr/app/src/main/res/layout/dropdown_item.xml" value="0.4890625" />
+        <entry key="..\:/Users/olek0/Documents/Semestr/Semester_6/MobileAppPr/app/src/main/res/layout/activity_ranking.xml" value="0.5374358974358975" />
         <entry key="..\:/Users/olek0/Documents/Semestr/Semester_6/MobileAppPr/app/src/main/res/layout/liked_meme_list_item.xml" value="0.5494791666666666" />
         <entry key="..\:/Users/olek0/Documents/Semestr/Semester_6/MobileAppPr/app/src/main/res/layout/meme_rv.xml" value="0.541025641025641" />
       </map>
