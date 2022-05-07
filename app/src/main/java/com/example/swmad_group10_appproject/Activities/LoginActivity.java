@@ -21,7 +21,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-// Inspiration taken from: https://www.youtube.com/watch?v=TwHmrZxiPA8
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -66,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // Inspiration to make the Login-system is taken from: https://www.youtube.com/watch?v=TwHmrZxiPA8
     private void LoginIn() {
         // Getting the supplied data
         String email = txtEmail.getText().toString();

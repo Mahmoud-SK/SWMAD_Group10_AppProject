@@ -34,20 +34,41 @@
         android:id="@+id/img_likedMemeListItem"
         android:layout_width="172dp"
         android:layout_height="120dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.04"
         app:srcCompat="@mipmap/ic_launcher" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv_liked_meme_list"
-        android:layout_width="397dp"
-        android:layout_height="435dp"
+        android:layout_width="387dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="60dp"
         app:layout_constraintBottom_toTopOf="@+id/btn_uploadMeme"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/spr_profile"
+        android:layout_width="99dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/txt_chosen_radius"
+        app:layout_constraintHorizontal_bias="0.833"
+        app:layout_constraintStart_toStartOf="@+id/txt_chosen_radius"
+        app:layout_constraintTop_toBottomOf="@+id/txt_chosen_radius" />
+
+    <TextView
+        android:id="@+id/txt_chosen_radius"
+        android:layout_width="195dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="96dp"
+        android:text="Choose Radius"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toStartOf="@+id/rcv_liked_meme_list"
         app:layout_constraintTop_toBottomOf="@+id/img_likedMemeListItem" />
 </androidx.constraintlayout.widget.ConstraintLayout>

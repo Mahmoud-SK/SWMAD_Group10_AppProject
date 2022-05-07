@@ -1,0 +1,12 @@
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textView5"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="TextView"
+    android:padding="15dp"
+    android:textColor="@color/cardview_dark_background"
+    android:textSize="18dp"
+    android:textStyle="bold">
+</TextView>
+
