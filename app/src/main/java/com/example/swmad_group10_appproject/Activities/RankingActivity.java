@@ -30,27 +30,38 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 // inspired from https://firebase.google.com/docs/firestore/query-data/listen#java_2
+
 
 public class RankingActivity extends AppCompatActivity {
 
     //widgets
     private Button btn2Back;
     private RecyclerView recyclerView;
-    ArrayList<Meme> memeArrayList;
-    RankingAdapter rankingAdapter;
-    FirebaseFirestore db;
+    private ArrayList<Meme> memeArrayList;
+    private RankingAdapter rankingAdapter;
     private RankingViewModel rankingViewModel;
-    ProgressDialog progressDialog;
-    String[] items = {"Today","Week","Month","Year"};
-    AutoCompleteTextView autoCompleteTextView;
-    ArrayAdapter<String> adapterItems;
+    private ProgressDialog progressDialog;
+    private ArrayList<String> items;
+    private AutoCompleteTextView autoCompleteTextView;
+    private ArrayAdapter<String> adapterItems;
+    private int daysBack;
+    private boolean allTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ranking);
+        daysBack = 1;
+        allTime = false;
+        items = new ArrayList<String>();
+        items.add(getString(R.string.ScoreToday));
+        items.add(getString(R.string.ScoreThisWeek));
+        items.add(getString(R.string.ScoreThisMonth));
+        items.add(getString(R.string.ScoreThisYear));
+        items.add(getString(R.string.ScoreAllTime));
 
         progressDialog =new ProgressDialog(this);
         progressDialog.setCancelable(false);
@@ -75,18 +86,35 @@ public class RankingActivity extends AppCompatActivity {
                 //Toast.makeText(getApplicationContext(),"Item:"+item,Toast.LENGTH_SHORT).show();
                 switch (position){
                     case 0:
-
+                        daysBack = 1;
+                        allTime = false;
+                        EventChangeListener();
                         Toast.makeText(getApplicationContext(),"Today",Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
+                        daysBack = 7;
+                        allTime = false;
+                        EventChangeListener();
                         Toast.makeText(getApplicationContext(),"Week",Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
+                        daysBack = 30;
+                        allTime = false;
+                        EventChangeListener();
                         Toast.makeText(getApplicationContext(),"Month",Toast.LENGTH_SHORT).show();
                         break;
                     case 3:
+                        daysBack = 365;
+                        allTime = false;
+                        EventChangeListener();
                         Toast.makeText(getApplicationContext(),"Year",Toast.LENGTH_SHORT).show();
                         break;
+                    case 4:
+                        allTime = true;
+                        EventChangeListener();
+                        Toast.makeText(getApplicationContext(),"All time",Toast.LENGTH_SHORT).show();
+                        break;
+
 
                 }
             }
@@ -96,7 +124,6 @@ public class RankingActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        db = FirebaseFirestore.getInstance();
         memeArrayList = new ArrayList<Meme>();
         rankingAdapter = new RankingAdapter(RankingActivity.this, memeArrayList);
         recyclerView.setAdapter(rankingAdapter);
@@ -112,11 +139,11 @@ public class RankingActivity extends AppCompatActivity {
         }
 
     private void EventChangeListener() {
-
         rankingViewModel.Scoregetter().addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-
+                        memeArrayList.clear();
+                        Date compareDate = new Date(System.currentTimeMillis()-daysBack*24*60*60*1000L);
                         if (e != null){
 
                             if (progressDialog.isShowing())
@@ -126,7 +153,12 @@ public class RankingActivity extends AppCompatActivity {
                         }
                         for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()){
                             if (documentChange.getType() == DocumentChange.Type.ADDED){
-                                memeArrayList.add(documentChange.getDocument().toObject(Meme.class));
+                                Meme meme = documentChange.getDocument().toObject(Meme.class);
+                                // https://stackoverflow.com/questions/11965974/how-to-set-a-java-date-objects-value-to-yesterday
+                                if (allTime || meme.getDate().after(compareDate)){
+                                    memeArrayList.add(meme);
+                                }
+
                             }
 
                             rankingAdapter.notifyDataSetChanged();
