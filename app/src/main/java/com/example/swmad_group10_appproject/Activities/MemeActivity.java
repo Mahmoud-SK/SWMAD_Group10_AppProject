@@ -54,7 +54,6 @@ public class MemeActivity extends AppCompatActivity {
         memeIndex = 0;
         firstMeme = true;
         //memes = new ArrayList<Meme>();
-        //tempLink = "https://firebasestorage.googleapis.com/v0/b/swmad-group10-appproject.appspot.com/o/Memes%2F4b45692d-12ea-420a-a8f7-8b986cc4193d.png?alt=media&token=9faddd86-7827-4720-874c-ec2730362b1a";
         memeVM = new ViewModelProvider(this).get(MemeViewModel.class);
 
         btnProfile = findViewById(R.id.btnMemeGoToProfile);
@@ -84,13 +83,15 @@ public class MemeActivity extends AppCompatActivity {
             public void onChanged(List<Meme> memes) {
                 if (!memes.isEmpty() && firstMeme)
                     firstMeme = false;
-                    nextMeme(R.anim.no_animation, R.anim.no_animation);
+                    nextMeme();
             }
         });
         memeVM.getMemesWithinRadius(2);
         setupSwipeDetection();
     }
 
+    // How to detect motion events and react to them
+    // https://stackoverflow.com/questions/11421368/android-fragment-oncreateview-with-gestures
     public void setupSwipeDetection(){
         gesture = new GestureDetector(this,
                 new GestureDetector.SimpleOnGestureListener(){
@@ -114,7 +115,7 @@ public class MemeActivity extends AppCompatActivity {
                             memeVM.UpdateMeme(newMemes.getValue().get(memeIndex));
                             animIn = R.anim.fade_in;
                             animOut = R.anim.slide_out_left;
-                            nextMeme(R.anim.fade_in, R.anim.slide_out_left);
+                            nextMeme();
                         }
                         else if (event2.getX() - event1.getX() > minSwipeDistance){
                             //Log.d(TAG, "onFling: right");
@@ -126,14 +127,14 @@ public class MemeActivity extends AppCompatActivity {
                             memeVM.UpdateMeme(newMemes.getValue().get(memeIndex));
                             animIn = R.anim.fade_in;
                             animOut = R.anim.slide_out_right;
-                            nextMeme(R.anim.fade_in, R.anim.slide_out_right);
+                            nextMeme();
                         }
                         return super.onFling(event1, event2, velocityX, velocityY);
                     }
                 });
     }
 
-    public void nextMeme(int inAnimation, int outAnimation){
+    public void nextMeme(){
         if (memeIndex >= newMemes.getValue().size()-1){
             memeIndex = 0;
             firstMeme = true;
@@ -228,6 +229,8 @@ public class MemeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //this is also a part of the swipe detection
+    //https://stackoverflow.com/questions/13927305/how-to-set-onfling-event-of-gesture-on-scrollview-in-android
     @Override
     public boolean dispatchTouchEvent(MotionEvent event){
         gesture.onTouchEvent(event);
