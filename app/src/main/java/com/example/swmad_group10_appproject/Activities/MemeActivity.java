@@ -2,6 +2,9 @@ package com.example.swmad_group10_appproject.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.swmad_group10_appproject.Fragments.MemeFragment;
@@ -35,11 +38,13 @@ public class MemeActivity extends AppCompatActivity {
 
     private GestureDetector gesture;
     private MemeViewModel memeVM;
-    private List<Meme> memes;
+    //private List<Meme> memes;
     private int memeIndex;
+    private boolean firstMeme;
     private int animIn;
     private int animOut;
-    private String tempLink;
+
+    private LiveData<List<Meme>> newMemes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +52,8 @@ public class MemeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_meme);
 
         memeIndex = 0;
-        memes = new ArrayList<Meme>();
-        //tempLink = "https://firebasestorage.googleapis.com/v0/b/swmad-group10-appproject.appspot.com/o/Memes%2F4b45692d-12ea-420a-a8f7-8b986cc4193d.png?alt=media&token=9faddd86-7827-4720-874c-ec2730362b1a";
+        firstMeme = true;
+        //memes = new ArrayList<Meme>();
         memeVM = new ViewModelProvider(this).get(MemeViewModel.class);
 
         btnProfile = findViewById(R.id.btnMemeGoToProfile);
@@ -71,18 +76,22 @@ public class MemeActivity extends AppCompatActivity {
 
         animIn = R.anim.no_animation;
         animOut = R.anim.no_animation;
-        getMemes();
-
-        if (savedInstanceState == null){
-            //nextMeme(R.anim.no_animation, R.anim.no_animation);
-            /*getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container1, MemeFragment.newInstance("top ged", "bottom ged", tempLink))
-                    .commitNow();*/
-        }
-
+        //getMemes();
+        newMemes = memeVM.getMemeList();
+        newMemes.observe(this, new Observer<List<Meme>>() {
+            @Override
+            public void onChanged(List<Meme> memes) {
+                if (!memes.isEmpty() && firstMeme)
+                    firstMeme = false;
+                    nextMeme();
+            }
+        });
+        memeVM.getMemesWithinRadius(2);
         setupSwipeDetection();
     }
 
+    // How to detect motion events and react to them
+    // https://stackoverflow.com/questions/11421368/android-fragment-oncreateview-with-gestures
     public void setupSwipeDetection(){
         gesture = new GestureDetector(this,
                 new GestureDetector.SimpleOnGestureListener(){
@@ -97,40 +106,52 @@ public class MemeActivity extends AppCompatActivity {
                         Log.d(TAG, "onFling: ");
                         final int minSwipeDistance = 100;
                         if (event1.getX() - event2.getX() > minSwipeDistance){
-                            Log.d(TAG, "onFling: left");
-                            memes.get(memeIndex).updateScore(-1);
-                            memeVM.UpdateMeme(memes.get(memeIndex));
-                            Log.d(TAG, "onFling: left " + memes.get(memeIndex).getKey());
-                            Log.d(TAG, "onFling: left " + memes.get(memeIndex).getScore());
-                            nextMeme(R.anim.fade_in, R.anim.slide_out_left);
-
-                            /*getSupportFragmentManager().beginTransaction()
-                                    .setCustomAnimations(R.anim.fade_in, R.anim.slide_out_left)
-                                    .replace(R.id.container1, MemeFragment.newInstance("top left ged",
-                                            "bottom left ged", tempLink))
-                                    .commitNow();*/
+                            //Log.d(TAG, "onFling: left");
+                            /*memes.get(memeIndex).updateScore(-1);
+                            memeVM.UpdateMeme(memes.get(memeIndex));*/
+                            newMemes.getValue().get(memeIndex).updateScore(-1);
+                            Log.d(TAG, "onFling: left " + newMemes.getValue().get(memeIndex).getKey());
+                            Log.d(TAG, "onFling: left " + newMemes.getValue().get(memeIndex).getScore());
+                            memeVM.UpdateMeme(newMemes.getValue().get(memeIndex));
+                            animIn = R.anim.fade_in;
+                            animOut = R.anim.slide_out_left;
+                            nextMeme();
                         }
                         else if (event2.getX() - event1.getX() > minSwipeDistance){
-                            memes.get(memeIndex).updateScore(1);
-                            memeVM.UpdateMeme(memes.get(memeIndex));
-                            Log.d(TAG, "onFling: right " + memes.get(memeIndex).getKey());
-                            Log.d(TAG, "onFling: right " + memes.get(memeIndex).getScore());
-                            nextMeme(R.anim.fade_in, R.anim.slide_out_right);
-                            /*getSupportFragmentManager().beginTransaction()
-                                    .setCustomAnimations(R.anim.fade_in, R.anim.slide_out_right)
-                                    .replace(R.id.container1, MemeFragment.newInstance("top right ged",
-                                            "bottom right ged", tempLink))
-                                    .commitNow();*/
-                            Log.d(TAG, "onFling: right");
+                            //Log.d(TAG, "onFling: right");
+                            /*memes.get(memeIndex).updateScore(1);
+                            memeVM.UpdateMeme(memes.get(memeIndex));*/
+                            newMemes.getValue().get(memeIndex).updateScore(1);
+                            Log.d(TAG, "onFling: right " + newMemes.getValue().get(memeIndex).getKey());
+                            Log.d(TAG, "onFling: right " + newMemes.getValue().get(memeIndex).getScore());
+                            memeVM.UpdateMeme(newMemes.getValue().get(memeIndex));
+                            animIn = R.anim.fade_in;
+                            animOut = R.anim.slide_out_right;
+                            nextMeme();
                         }
-
                         return super.onFling(event1, event2, velocityX, velocityY);
                     }
                 });
     }
 
-    public void nextMeme(int inAnimation, int outAnimation){
-        if (!memes.isEmpty()) {
+    public void nextMeme(){
+        if (memeIndex >= newMemes.getValue().size()-1){
+            memeIndex = 0;
+            firstMeme = true;
+            memeVM.getMemesWithinRadius(2);
+            Log.d(TAG, "nextMeme: out of memes");
+        }
+        else {
+            Meme nextMeme = newMemes.getValue().get(memeIndex);
+
+            getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(animIn, animOut)
+                    .replace(R.id.container1, MemeFragment.newInstance(nextMeme.getTopText(),
+                            nextMeme.getBottomText(), nextMeme.getMemeImgURL()))
+                    .commit();
+            memeIndex++;
+        }
+       /* if (!memes.isEmpty()) {
             if (memeIndex >= memes.size()-1){
                 memeIndex = 0;
                 animIn = inAnimation;
@@ -151,10 +172,10 @@ public class MemeActivity extends AppCompatActivity {
         }
         else {
             Log.e(TAG, "nextMeme: No memes");
-        }
+        }*/
     }
 
-    public void getMemes(){
+    /*public void getMemes(){
         memeVM.getMemes().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -168,9 +189,9 @@ public class MemeActivity extends AppCompatActivity {
                 }
             }
         });
-    }
+    }*/
 
-    public void ConverteToMemes(List<DocumentSnapshot> snapshots){
+    /*public void ConverteToMemes(List<DocumentSnapshot> snapshots){
         ArrayList<Meme> tempList = new ArrayList<Meme>();
         for (DocumentSnapshot snapshot:snapshots) {
             Map<String,Object> data = snapshot.getData();
@@ -196,7 +217,7 @@ public class MemeActivity extends AppCompatActivity {
         }
 
         memes = tempList;
-    }
+    }*/
 
     private void launchProfileActivity(){
         Intent intent = new Intent(this, ProfileActivity.class);
@@ -208,6 +229,8 @@ public class MemeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //this is also a part of the swipe detection
+    //https://stackoverflow.com/questions/13927305/how-to-set-onfling-event-of-gesture-on-scrollview-in-android
     @Override
     public boolean dispatchTouchEvent(MotionEvent event){
         gesture.onTouchEvent(event);

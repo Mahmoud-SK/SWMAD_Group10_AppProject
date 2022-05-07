@@ -17,11 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.swmad_group10_appproject.Activities.MemeActivity;
 import com.example.swmad_group10_appproject.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MemeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+// Most of this class is inspired by the fragments made in the lecture videos about fragments
 public class MemeFragment extends Fragment {
 
     private static final String TAG = "MemeFragment";
@@ -58,36 +54,6 @@ public class MemeFragment extends Fragment {
         txtTopText.setText(topText);
         txtBottomText.setText(bottomText);
         Glide.with(imgMemeImage.getContext()).load(imgLink).into(imgMemeImage);
-
-        /*final GestureDetector gesture = new GestureDetector(getActivity(),
-                new GestureDetector.SimpleOnGestureListener(){
-
-                    @Override
-                    public boolean onDown(MotionEvent event){
-                        return true;
-                    }
-
-                    @Override
-                    public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY){
-                        Log.d(TAG, "onFling: ");
-                        final int minSwipeDistance = 100;
-                        if (event1.getX() - event2.getX() > minSwipeDistance){
-                            Log.d(TAG, "onFling: left");
-                        }
-                        else if (event2.getX() - event1.getX() > minSwipeDistance){
-                            Log.d(TAG, "onFling: right");
-                        }
-                        
-                        return super.onFling(event1, event2, velocityX, velocityY);
-                    }
-                });
-        v.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return gesture.onTouchEvent(motionEvent);
-            }
-        });*/
-
         return v;
     }
 

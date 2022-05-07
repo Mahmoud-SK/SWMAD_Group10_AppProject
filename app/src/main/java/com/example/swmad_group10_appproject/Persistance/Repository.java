@@ -180,6 +180,37 @@ public class Repository {
          });*/
     }
 
+    public void getMemesWithinRadius(MutableLiveData<List<Meme>> result, int radius){
+        //Get result from firbase back to a meme model
+        // https://www.geeksforgeeks.org/how-to-update-data-in-firebase-firestore-in-android/
+        List<Meme> tempList = new ArrayList<Meme>();
+        firebaseStore.collection("Memes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()){
+                    Log.d(TAG, "onSuccess getting mems: ");
+                    List<DocumentSnapshot> docSnapshots = queryDocumentSnapshots.getDocuments();
+                    for (DocumentSnapshot docSnapshot : queryDocumentSnapshots.getDocuments()) {
+                        Meme tempMeme = docSnapshot.toObject(Meme.class);
+                        tempMeme.setKey(docSnapshot.getId());
+                        //android.location.Location.distanceBetween()
+                        if (true){
+                            tempList.add(tempMeme);
+                        }
+                    }
+                    result.setValue(tempList);
+                }
+
+                //android.location.Location.distanceBetween();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "onFailure getting memes: ", e);
+            }
+        });
+    }
+
     public void updateMeme(Meme meme){
         firebaseStore.collection("Memes").document(meme.getKey()).set(meme);
     }
