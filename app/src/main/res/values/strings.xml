@@ -19,11 +19,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="btnGoToRanking">Go To Ranking</string>
     <string name="btnGoToProfile">Go To Profile</string>
-    <string name="best_score_for_today">Score Menu</string>
-    <string-array name="Score">
-        <item>Today</item>
-        <item>Week</item>
-        <item>Month</item>
-        <item>Year</item>
-    </string-array>
+    <string name="best_score_for_today">Today</string>
+    <string name="ScoreToday">Today</string>
+    <string name="ScoreThisWeek">This Week</string>
+    <string name="ScoreThisMonth">This Month</string>
+    <string name="ScoreThisYear">This Year</string>
+    <string name="ScoreAllTime">All Time</string>
+
 </resources>
