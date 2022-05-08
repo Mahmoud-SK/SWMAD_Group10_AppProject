@@ -73,7 +73,7 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meme_builder);
-
+        //Set up widgets
         img_camera = findViewById(R.id.img_camera);
         btn_openCamera = findViewById(R.id.btn_openCamera);
         btn_editMeme = findViewById(R.id.btn_editMeme);
@@ -83,16 +83,11 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
 
         vm = new ViewModelProvider(this).get(MemeBuilderViewModel.class);
 
-        // Reference: https://www.youtube.com/watch?v=RaOyw84625w
-        //Request for camera permission
-        if(ContextCompat.checkSelfPermission(MemeBuilderActivity.this,
-                Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MemeBuilderActivity.this,
-                    new String[]{
-                            Manifest.permission.CAMERA
-                    },
-                    100);
-        }
+
+        CameraSetUp();
+
+        LocationSetUp();
+
         btn_openCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,28 +138,6 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
             }
         });
 
-        // Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
-        // Check the android version
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_DENIED) {
-
-                Log.d("permission", "permission denied to ACCESS_FINE_LOCATION - requesting it");
-                String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
-
-                requestPermissions(permissions, PERMISSION_REQUEST_CODE);
-
-            }
-        }
-        //Reference: https://javapapers.com/android/get-current-location-in-android/
-        // Get current location
-        try {
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,this);
-        }catch (Exception e){
-            Log.d(TAG,"Get current location error");
-        }
 
 
     }
@@ -187,6 +160,20 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
             }
     );
 
+    private void CameraSetUp() {
+        // Reference: https://www.youtube.com/watch?v=RaOyw84625w
+        //Request for camera permission
+        if(ContextCompat.checkSelfPermission(MemeBuilderActivity.this,
+                Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MemeBuilderActivity.this,
+                    new String[]{
+                            Manifest.permission.CAMERA
+                    },
+                    100);
+        }
+    }
+
+
     private void SaveToast(){
         CharSequence text = "You have uploaded your meme !";
         int duration = Toast.LENGTH_SHORT;
@@ -194,10 +181,38 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
         toast.show();
     }
 
+    public void LocationSetUp(){
+        // Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
+        // Check the android version
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_DENIED) {
+
+                Log.d("permission", "permission denied to ACCESS_FINE_LOCATION - requesting it");
+                String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+
+                requestPermissions(permissions, PERMISSION_REQUEST_CODE);
+
+            }
+        }
+        //Reference: https://javapapers.com/android/get-current-location-in-android/
+        // Get current location
+        try {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,this);
+        }catch (Exception e){
+            Log.d(TAG,"Get current location error");
+        }
+    }
+
+
     @Override
     public void onLocationChanged(@NonNull Location location) {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
+
+        Log.d("Latitude","status");
     }
 
     @Override

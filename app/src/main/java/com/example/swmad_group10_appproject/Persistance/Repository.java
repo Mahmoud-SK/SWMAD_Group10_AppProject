@@ -50,7 +50,6 @@ public class Repository {
     FirebaseStorage storage;
     DatabaseReference databaseReference;
 
-    private MutableLiveData<List<Meme>> memeList = new MutableLiveData<>();
 
     public static Repository getInstance(Application app) {
         if (instance == null) {
@@ -68,7 +67,6 @@ public class Repository {
 
     }
 
-    public LiveData<List<Meme>> getUserLikedMeme(){return memeList;}
 
     // Inspiration to make the Register-system is taken from: https://www.youtube.com/watch?v=TwHmrZxiPA8
     public void registerUser(User user) {
@@ -100,6 +98,10 @@ public class Repository {
 
     public Task<AuthResult> loginUser(String email, String password) {
         return firebaseAuth.signInWithEmailAndPassword(email,password);
+    }
+
+    public void logoutUser(){
+        firebaseAuth.signOut();
     }
 
     public void uploadMeme(Meme meme, Bitmap image){

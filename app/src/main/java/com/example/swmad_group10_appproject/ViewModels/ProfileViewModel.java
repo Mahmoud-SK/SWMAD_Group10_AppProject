@@ -29,4 +29,6 @@ public class ProfileViewModel extends AndroidViewModel  {
     public void updateCurrentRadius(int radius) {
         repository.updateCurrentRadius(radius);
     }
+
+    public void LogoutUser(){repository.logoutUser();}
 }

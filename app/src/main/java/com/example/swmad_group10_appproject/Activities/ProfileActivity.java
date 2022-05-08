@@ -46,7 +46,7 @@ import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity implements LocationListener {
 
-    Button btn_createMeme, btn_uploadMeme, btn_back_profile;
+    Button btn_createMeme, btn_uploadMeme, btn_back_profile, btn_logout;
     Spinner spr_profile;
     private Meme newMeme;
     ProfileViewModel vm;
@@ -65,15 +65,19 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
+        //Set up widgets
         btn_uploadMeme = findViewById(R.id.btn_uploadMeme);
         btn_createMeme = findViewById(R.id.btn_CreateMeme);
         btn_back_profile = findViewById(R.id.btn_back_profile);
+        btn_logout = findViewById(R.id.btn_logOut_profile);
         spr_profile = findViewById(R.id.spr_profile);
 
 
         vm = new ViewModelProvider(this).get(ProfileViewModel.class);
 
+        SpinnerSetup();
+        LocationSetup();
+        PreloadRadius();
 
         btn_uploadMeme.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,17 +102,16 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
             }
         });
 
-        SpinnerSetup();
-        LocationSetup();
-        PreloadRadius();
-    }
+        btn_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                vm.LogoutUser();
+                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
-    //Reference: https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
-    private void getImageFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        getImageResultLauncher.launch(intent);
+
     }
 
     ActivityResultLauncher<Intent> getImageResultLauncher = registerForActivityResult(
@@ -119,7 +122,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
                     if (result.getResultCode()== AppCompatActivity.RESULT_OK){
                         Intent data = result.getData();
                         final Uri selectedImgUri = data.getData();
-                        newMeme = new Meme("","","",0.0,0.0,0,0);
+                        newMeme = new Meme("","","",latitude,longitude,0,0);
                         // https://stackoverflow.com/questions/3879992/how-to-get-bitmap-from-an-uri
                         Bitmap bitmap = null;
                         try {
@@ -135,6 +138,14 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
                 }
             }
     );
+
+    //Reference: https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+    private void getImageFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        getImageResultLauncher.launch(intent);
+    }
 
     private void SaveToast(){
         CharSequence text = "You have uploaded your meme from the gallery !";
@@ -207,7 +218,6 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
                 String itemValue = adapterView.getItemAtPosition(i).toString();
                 radius = Integer.parseInt(itemValue);
                 vm.updateCurrentRadius(radius);
-                setRadius(radius);
             }
 
             @Override
@@ -233,9 +243,5 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         });
     }
 
-
-    public void setRadius(int radius){
-
-    }
 
 }
