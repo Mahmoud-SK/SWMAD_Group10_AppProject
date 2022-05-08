@@ -8,8 +8,6 @@ import androidx.lifecycle.LiveData;
 
 import com.example.swmad_group10_appproject.Models.Meme;
 import com.example.swmad_group10_appproject.Persistance.Repository;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.QuerySnapshot;
 
 public class ProfileViewModel extends AndroidViewModel  {
 
@@ -24,11 +22,15 @@ public class ProfileViewModel extends AndroidViewModel  {
         repository.uploadMeme(meme,image);
     }
 
-    public LiveData<Integer> getCurrentRadius(){return repository.getCurrentRadius();}
+    public LiveData<Integer> getCurrentRadius() {
+        return repository.getCurrentRadius();
+    }
 
     public void updateCurrentRadius(int radius) {
         repository.updateCurrentRadius(radius);
     }
 
-    public void LogoutUser(){repository.logoutUser();}
+    public void LogoutUser() {
+        repository.logoutUser();
+    }
 }

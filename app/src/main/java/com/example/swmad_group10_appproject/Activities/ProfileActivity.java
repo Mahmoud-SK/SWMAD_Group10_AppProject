@@ -5,12 +5,9 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
@@ -32,32 +29,24 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.swmad_group10_appproject.Models.Meme;
-import com.example.swmad_group10_appproject.Models.User;
 import com.example.swmad_group10_appproject.R;
 import com.example.swmad_group10_appproject.ViewModels.ProfileViewModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity implements LocationListener {
 
-    Button btn_createMeme, btn_uploadMeme, btn_back_profile, btn_logout;
-    Spinner spr_profile;
+    private Button btn_createMeme, btn_uploadMeme, btn_back_profile, btn_logout;
+    private Spinner spr_profile;
     private Meme newMeme;
-    ProfileViewModel vm;
+    private ProfileViewModel vm;
     public final String TAG = "ProfileActivity";
     protected LocationManager locationManager;
     protected double latitude,longitude;
     private static final int PERMISSION_REQUEST_CODE = 1;
-
-
-    ArrayList<String> arrayList = new ArrayList<>();
-    ArrayAdapter<String> arrayAdapter;
+    private final ArrayList<String> arrayList = new ArrayList<>();
+    private ArrayAdapter<String> arrayAdapter;
     int radius;
 
 
@@ -71,7 +60,6 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         btn_back_profile = findViewById(R.id.btn_back_profile);
         btn_logout = findViewById(R.id.btn_logOut_profile);
         spr_profile = findViewById(R.id.spr_profile);
-
 
         vm = new ViewModelProvider(this).get(ProfileViewModel.class);
 
@@ -89,8 +77,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         btn_createMeme.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View view) {
-                  Intent intent = new Intent(ProfileActivity.this, MemeBuilderActivity.class);
-                  startActivity(intent);
+                  gotoMemeBuilderActivity();
               }
           }
         );
@@ -105,13 +92,22 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                vm.LogoutUser();
-                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-                startActivity(intent);
+                logoutUser();
             }
         });
 
 
+    }
+
+    private void logoutUser() {
+        vm.LogoutUser();
+        Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+        startActivity(intent);
+    }
+
+    private void gotoMemeBuilderActivity() {
+        Intent intent = new Intent(ProfileActivity.this, MemeBuilderActivity.class);
+        startActivity(intent);
     }
 
     ActivityResultLauncher<Intent> getImageResultLauncher = registerForActivityResult(
@@ -139,7 +135,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
             }
     );
 
-    //Reference: https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+    // Inspiration/Reference from: https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
     private void getImageFromGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
@@ -147,6 +143,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         getImageResultLauncher.launch(intent);
     }
 
+    // Notifies the user that the meme has been uploaded successfully.
     private void SaveToast(){
         CharSequence text = "You have uploaded your meme from the gallery !";
         int duration = Toast.LENGTH_SHORT;
@@ -155,10 +152,9 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
     }
 
     private void LocationSetup() {
-        // Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
-        // Check the android version
+        // Inspiration/Reference from: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
+        // Checks the android version
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_DENIED) {
 
@@ -167,8 +163,8 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
                 requestPermissions(permissions, PERMISSION_REQUEST_CODE);
             }
         }
-        //Reference: https://javapapers.com/android/get-current-location-in-android/
-        // Get current location
+        // Inspiration/Reference from: https://javapapers.com/android/get-current-location-in-android/
+        // Gets the current location
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) this);
@@ -199,13 +195,16 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         LocationListener.super.onProviderDisabled(provider);
     }
 
+    // Kilde?
+    // Creates a dropdown component with the different radius available.
+    // When selecting a new radius from the dropdown, the selected radius will be the new radius for the logged in user.
     public void SpinnerSetup(){
         arrayList.add("5");
         arrayList.add("10");
         arrayList.add("15");
         arrayList.add("20");
 
-        arrayAdapter = new ArrayAdapter<String>(this,
+        arrayAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item,
                 arrayList
         );
@@ -227,17 +226,14 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         });
     }
 
+    // Gets the saved radius for the specific user logged in.
     private void PreloadRadius() {
-
-        vm.getCurrentRadius().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                for (int x = 0; x<4; x++){
-                    int converValue = Integer.parseInt(arrayAdapter.getItem(x));
-                    if (integer.equals(converValue)){
-                        Log.d(TAG,"Preload Radius: " + integer);
-                        spr_profile.setSelection(x);
-                    }
+        vm.getCurrentRadius().observe(this, integer -> {
+            for (int x = 0; x<4; x++){
+                int convertValue = Integer.parseInt(arrayAdapter.getItem(x));
+                if (integer.equals(convertValue)){
+                    Log.d(TAG,"Preload Radius: " + integer);
+                    spr_profile.setSelection(x);
                 }
             }
         });

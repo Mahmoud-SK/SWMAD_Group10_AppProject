@@ -7,7 +7,7 @@ public class User {
     private String Username;
     private int Radius;
 
-    public User(){
+    public User() {
 
     }
 

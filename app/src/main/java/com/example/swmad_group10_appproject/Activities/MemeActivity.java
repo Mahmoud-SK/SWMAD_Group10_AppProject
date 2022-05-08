@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -14,31 +13,16 @@ import com.example.swmad_group10_appproject.Models.Meme;
 import com.example.swmad_group10_appproject.R;
 import com.example.swmad_group10_appproject.ViewModels.MemeViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationAvailability;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -46,31 +30,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MemeActivity extends AppCompatActivity {
 
     private static final String TAG = "MemeActivity";
 
     private Button btnRanking, btnProfile;
-
     private GestureDetector gesture;
     private MemeViewModel memeVM;
-    //private List<Meme> memes;
-    private int memeIndex;
+    private int memeIndex, animIn, animOut, radius;
     private boolean firstMeme;
-    private int animIn;
-    private int animOut;
-
     private FusedLocationProviderClient fusedLocationClient;
-    private LocationCallback locationCallback;
-    private Location lastLocation;
     public static final int PERMISSIONS_REQUEST_LOCATION = 601;
-
-    private int radius;
-
     private LiveData<List<Meme>> newMemes;
 
     @Override
@@ -81,12 +53,10 @@ public class MemeActivity extends AppCompatActivity {
         memeIndex = 0;
         firstMeme = true;
         radius = 20;
-        //memes = new ArrayList<Meme>();
-        memeVM = new ViewModelProvider(this).get(MemeViewModel.class);
 
+        memeVM = new ViewModelProvider(this).get(MemeViewModel.class);
         btnProfile = findViewById(R.id.btnMemeGoToProfile);
         btnRanking = findViewById(R.id.btnMemeGoToRanking);
-
 
         btnRanking.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +83,7 @@ public class MemeActivity extends AppCompatActivity {
 
         animIn = R.anim.no_animation;
         animOut = R.anim.no_animation;
-        //getMemes();
+
         newMemes = memeVM.getMemeList();
         newMemes.observe(this, new Observer<List<Meme>>() {
             @Override
@@ -125,37 +95,16 @@ public class MemeActivity extends AppCompatActivity {
                     nextMeme();
             }
         });
-        //memeVM.getMemesWithinRadius(2);
-        //getMemesBasedOnLocation();
+
         setupSwipeDetection();
     }
 
-    //inspired by the lecture video about fusedlocationprovider
+    // Inspiration from: L9 | Sensors, Location and Maps [About Fused Location Service]
     public void setupLocationFramework(){
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        /*locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                if (locationResult == null){
-                    Log.d(TAG, "onLocationResult: empty result");
-                    return;
-                }
-                for (Location location : locationResult.getLocations()) {
-                    Log.d(TAG, "onLocationResult: " + location.getLatitude() + " , " + location.getLongitude());
-                    lastLocation = location;
-                    memeVM.getMemesWithinRadius(2, location.getLatitude(), location.getLongitude());
-                }
-            }
-            @Override
-            public void onLocationAvailability(@NonNull LocationAvailability locationAvailability) {
-                super.onLocationAvailability(locationAvailability);
-                Log.d(TAG, "onLocationAvailability: " + locationAvailability.isLocationAvailable());
-            }
-        };*/
     }
 
-    //inspired by the lecture video about fusedlocationprovider
+    // Inspiration from: L9 | Sensors, Location and Maps [About Fused Location Service]
     @SuppressLint("MissingPermission")
     private void getMemesBasedOnLocation(){
         Log.d(TAG, "getMemesBasedOnLocation: test");
@@ -176,6 +125,7 @@ public class MemeActivity extends AppCompatActivity {
         });
     }
 
+    // Inspiration from: L9 | Sensors, Location and Maps [About Fused Location Service]
     private void checkPermissions(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
         != PackageManager.PERMISSION_GRANTED){
@@ -187,7 +137,7 @@ public class MemeActivity extends AppCompatActivity {
     
 
     // How to detect motion events and react to them
-    // https://stackoverflow.com/questions/11421368/android-fragment-oncreateview-with-gestures
+    // Link: https://stackoverflow.com/questions/11421368/android-fragment-oncreateview-with-gestures
     public void setupSwipeDetection(){
         gesture = new GestureDetector(this,
                 new GestureDetector.SimpleOnGestureListener(){
@@ -202,9 +152,6 @@ public class MemeActivity extends AppCompatActivity {
                         Log.d(TAG, "onFling: ");
                         final int minSwipeDistance = 100;
                         if (event1.getX() - event2.getX() > minSwipeDistance){
-                            //Log.d(TAG, "onFling: left");
-                            /*memes.get(memeIndex).updateScore(-1);
-                            memeVM.UpdateMeme(memes.get(memeIndex));*/
                             if (!newMemes.getValue().isEmpty()) {
                                 newMemes.getValue().get(memeIndex-1).updateScore(-1);
                                 Log.d(TAG, "onFling: left " + newMemes.getValue().get(memeIndex-1).getKey());
@@ -216,9 +163,6 @@ public class MemeActivity extends AppCompatActivity {
                             }
                         }
                         else if (event2.getX() - event1.getX() > minSwipeDistance){
-                            //Log.d(TAG, "onFling: right");
-                            /*memes.get(memeIndex).updateScore(1);
-                            memeVM.UpdateMeme(memes.get(memeIndex));*/
                             if (!newMemes.getValue().isEmpty()) {
                                 newMemes.getValue().get(memeIndex-1).updateScore(1);
                                 Log.d(TAG, "onFling: right " + newMemes.getValue().get(memeIndex-1).getKey());
@@ -239,7 +183,6 @@ public class MemeActivity extends AppCompatActivity {
             memeIndex = 0;
             firstMeme = true;
             getMemesBasedOnLocation();
-            //memeVM.getMemesWithinRadius(2);
             Log.d(TAG, "nextMeme: out of memes");
         }
         else {
@@ -264,15 +207,16 @@ public class MemeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //this is also a part of the swipe detection
-    //https://stackoverflow.com/questions/13927305/how-to-set-onfling-event-of-gesture-on-scrollview-in-android
+    // This is also a part of the swipe detection
+    // Link: https://stackoverflow.com/questions/13927305/how-to-set-onfling-event-of-gesture-on-scrollview-in-android
     @Override
     public boolean dispatchTouchEvent(MotionEvent event){
         gesture.onTouchEvent(event);
         return super.dispatchTouchEvent(event);
     }
 
-    //Closed to the same as the lecture code but with one method call added
+    // Inspiration from: L9 | Sensors, Location and Maps [About Fused Location Service]
+    // Using Fused Location Provider (Corona tracker) : CoronaTracker 1.4.zip
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {

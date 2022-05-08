@@ -16,8 +16,7 @@ public class RegisterViewModel extends AndroidViewModel {
         repository = Repository.getInstance(app);
     }
 
-    public void registerUser(User user)
-    {
+    public void registerUser(User user) {
         repository.registerUser(user);
     }
 }

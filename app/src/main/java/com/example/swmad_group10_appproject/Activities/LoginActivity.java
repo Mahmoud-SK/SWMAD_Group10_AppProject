@@ -15,19 +15,17 @@ import android.widget.Toast;
 
 import com.example.swmad_group10_appproject.R;
 import com.example.swmad_group10_appproject.ViewModels.LoginViewModel;
-import com.example.swmad_group10_appproject.ViewModels.RegisterViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
-    EditText txtEmail, txtPassword;
-    Button btnRegister, btnLogin;
-    LoginViewModel vm;
+    private EditText txtEmail, txtPassword;
+    private Button btnRegister, btnLogin;
+    private LoginViewModel vm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

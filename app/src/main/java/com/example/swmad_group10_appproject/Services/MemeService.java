@@ -20,7 +20,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 // Inspiration from: L5 | Services and Asynch Processing - DemoServices 1.3.zip
-
 public class MemeService extends Service {
 
     private static final String TAG = "foregroundService";
@@ -91,7 +90,6 @@ public class MemeService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
 }
