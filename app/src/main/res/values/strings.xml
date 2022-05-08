@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">SWMAD_Group10_AppProject</string>
-    <string name="AppName">UMeme</string>
+    <string name="AppName" translatable="false">UMeme</string>
     <string name="Login">Sign In</string>
     <string name="Register">Register</string>
     <string name="Password">Password</string>
@@ -8,15 +8,12 @@
     <string name="UserName">Username</string>
     <string name="Signup">Sign up</string>
     <string name="AccountCreate">Create a new account</string>
-    <string name="testLogOut">Test Log Out</string>
     <string name="LoginTo">Login to your UMeme account</string>
     <string name="btnBack">Back</string>
     <string name="BackButton">Back</string>
     <string name="back">back</string>
     <string name="ranking_your_meme">Top MemesRanking</string>
-    <string name="select_the_number_of_stars_to_rate">Select the number of stars to rate</string>
     <string name="meme">MEME</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="btnGoToRanking">Go To Ranking</string>
     <string name="btnGoToProfile">Go To Profile</string>
     <string name="best_score_for_today">Today</string>
