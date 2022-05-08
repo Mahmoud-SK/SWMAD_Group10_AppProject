@@ -69,8 +69,7 @@ public class MemeActivity extends AppCompatActivity {
     private Location lastLocation;
     public static final int PERMISSIONS_REQUEST_LOCATION = 601;
 
-    private LocationManager locationManager;
-    //private static final int PERMISSION_REQUEST_CODE;
+    private int radius;
 
     private LiveData<List<Meme>> newMemes;
 
@@ -81,6 +80,7 @@ public class MemeActivity extends AppCompatActivity {
 
         memeIndex = 0;
         firstMeme = true;
+        radius = 20;
         //memes = new ArrayList<Meme>();
         memeVM = new ViewModelProvider(this).get(MemeViewModel.class);
 
@@ -101,6 +101,13 @@ public class MemeActivity extends AppCompatActivity {
             }
         });
 
+        memeVM.getCurrentRadius().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                radius = integer;
+            }
+        });
+
         checkPermissions();
         setupLocationFramework();
 
@@ -111,9 +118,9 @@ public class MemeActivity extends AppCompatActivity {
         newMemes.observe(this, new Observer<List<Meme>>() {
             @Override
             public void onChanged(List<Meme> memes) {
-                Log.d(TAG, "onChanged: test");
+                Log.d(TAG, "onChanged: newMemes");
                 if (!memes.isEmpty() && firstMeme)
-                    Log.d(TAG, "onChanged: we go to next meme");
+                    Log.d(TAG, "onChanged: we go to next meme first time after getting new memes");
                     firstMeme = false;
                     nextMeme();
             }
@@ -156,8 +163,9 @@ public class MemeActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Location location) {
                 if (location != null){
-                    Log.d(TAG, " We got a location ");
-                    memeVM.getMemesWithinRadius(2, location.getLatitude(), location.getLongitude());
+                    Log.d(TAG, " We got a location " + location.getLatitude() + " ; " + location.getLongitude());
+                    Log.d(TAG, "current radius: " + radius);
+                    memeVM.getMemesWithinRadius(radius, location.getLatitude(), location.getLongitude());
                 }
             }
         }).addOnFailureListener(this, new OnFailureListener() {
@@ -198,10 +206,10 @@ public class MemeActivity extends AppCompatActivity {
                             /*memes.get(memeIndex).updateScore(-1);
                             memeVM.UpdateMeme(memes.get(memeIndex));*/
                             if (!newMemes.getValue().isEmpty()) {
-                                newMemes.getValue().get(memeIndex).updateScore(-1);
-                                Log.d(TAG, "onFling: left " + newMemes.getValue().get(memeIndex).getKey());
-                                Log.d(TAG, "onFling: left " + newMemes.getValue().get(memeIndex).getScore());
-                                memeVM.UpdateMeme(newMemes.getValue().get(memeIndex));
+                                newMemes.getValue().get(memeIndex-1).updateScore(-1);
+                                Log.d(TAG, "onFling: left " + newMemes.getValue().get(memeIndex-1).getKey());
+                                Log.d(TAG, "onFling: left " + newMemes.getValue().get(memeIndex-1).getScore());
+                                memeVM.UpdateMeme(newMemes.getValue().get(memeIndex-1));
                                 animIn = R.anim.fade_in;
                                 animOut = R.anim.slide_out_left;
                                 nextMeme();
@@ -212,10 +220,10 @@ public class MemeActivity extends AppCompatActivity {
                             /*memes.get(memeIndex).updateScore(1);
                             memeVM.UpdateMeme(memes.get(memeIndex));*/
                             if (!newMemes.getValue().isEmpty()) {
-                                newMemes.getValue().get(memeIndex).updateScore(1);
-                                Log.d(TAG, "onFling: right " + newMemes.getValue().get(memeIndex).getKey());
-                                Log.d(TAG, "onFling: right " + newMemes.getValue().get(memeIndex).getScore());
-                                memeVM.UpdateMeme(newMemes.getValue().get(memeIndex));
+                                newMemes.getValue().get(memeIndex-1).updateScore(1);
+                                Log.d(TAG, "onFling: right " + newMemes.getValue().get(memeIndex-1).getKey());
+                                Log.d(TAG, "onFling: right " + newMemes.getValue().get(memeIndex-1).getScore());
+                                memeVM.UpdateMeme(newMemes.getValue().get(memeIndex-1));
                                 animIn = R.anim.fade_in;
                                 animOut = R.anim.slide_out_right;
                                 nextMeme();
@@ -227,7 +235,7 @@ public class MemeActivity extends AppCompatActivity {
     }
 
     public void nextMeme(){
-        if (memeIndex >= newMemes.getValue().size()-1){
+        if (memeIndex > newMemes.getValue().size()-1){
             memeIndex = 0;
             firstMeme = true;
             getMemesBasedOnLocation();
@@ -264,6 +272,7 @@ public class MemeActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(event);
     }
 
+    //Closed to the same as the lecture code but with one method call added
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {

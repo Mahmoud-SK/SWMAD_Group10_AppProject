@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.swmad_group10_appproject.Models.Meme;
 import com.example.swmad_group10_appproject.Persistance.Repository;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -29,6 +28,10 @@ public class MemeViewModel extends AndroidViewModel {
 
     public LiveData<List<Meme>> getMemeList(){
         return memes;
+    }
+
+    public LiveData<Integer> getCurrentRadius(){
+        return repository.getCurrentRadius();
     }
 
     public void getMemesWithinRadius(int radius, double latitude, double longitude){
