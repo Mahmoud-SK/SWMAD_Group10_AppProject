@@ -26,6 +26,7 @@ public class LoginViewModel extends AndroidViewModel {
     public FirebaseUser getCurrentUser() {
         return repository.getCurrentUser();
     }
+
     public void startService() {
         repository.startForegroundService(getApplication());
     }

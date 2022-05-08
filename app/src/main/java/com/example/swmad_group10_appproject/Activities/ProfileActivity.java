@@ -139,7 +139,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
             }
     );
 
-    //Reference: https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+    // Inspiration/Reference from: https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
     private void getImageFromGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
@@ -147,6 +147,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         getImageResultLauncher.launch(intent);
     }
 
+    // Notifies the user that the meme has been uploaded successfully.
     private void SaveToast(){
         CharSequence text = "You have uploaded your meme from the gallery !";
         int duration = Toast.LENGTH_SHORT;
@@ -154,11 +155,10 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         toast.show();
     }
 
-    // Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
     private void LocationSetup() {
+        // Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
         // Check the android version
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_DENIED) {
 
@@ -167,8 +167,8 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
                 requestPermissions(permissions, PERMISSION_REQUEST_CODE);
             }
         }
-        //Reference: https://javapapers.com/android/get-current-location-in-android/
-        // Get current location
+        // Inspiration/Reference from: https://javapapers.com/android/get-current-location-in-android/
+        // Gets the current location
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) this);
@@ -200,13 +200,15 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
     }
 
     // Reference: https://www.tutorialspoint.com/android/android_spinner_control.htm
+    // Creates a dropdown component with the different radius available.
+    // When selecting a new radius from the dropdown, the selected radius will be the new radius for the logged in user.
     public void SpinnerSetup(){
         arrayList.add("5");
         arrayList.add("10");
         arrayList.add("15");
         arrayList.add("20");
 
-        arrayAdapter = new ArrayAdapter<String>(this,
+        arrayAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item,
                 arrayList
         );
@@ -228,17 +230,14 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         });
     }
 
+    // Gets the saved radius for the specific user logged in.
     private void PreloadRadius() {
-
-        vm.getCurrentRadius().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                for (int x = 0; x<4; x++){
-                    int converValue = Integer.parseInt(arrayAdapter.getItem(x));
-                    if (integer.equals(converValue)){
-                        Log.d(TAG,"Preload Radius: " + integer);
-                        spr_profile.setSelection(x);
-                    }
+        vm.getCurrentRadius().observe(this, integer -> {
+            for (int x = 0; x<4; x++){
+                int convertValue = Integer.parseInt(arrayAdapter.getItem(x));
+                if (integer.equals(convertValue)){
+                    Log.d(TAG,"Preload Radius: " + integer);
+                    spr_profile.setSelection(x);
                 }
             }
         });

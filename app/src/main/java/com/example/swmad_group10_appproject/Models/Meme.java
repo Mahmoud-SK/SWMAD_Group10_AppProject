@@ -1,11 +1,8 @@
 package com.example.swmad_group10_appproject.Models;
 
-import com.google.firebase.Timestamp;
 import com.google.firebase.database.Exclude;
 
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.Map;
 
 public class Meme {
     public Meme(String topText, String bottomText, String memeImgURL, double latitude,

@@ -14,8 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.example.swmad_group10_appproject.Adapter.RankingAdapter;
@@ -24,9 +22,7 @@ import com.example.swmad_group10_appproject.R;
 import com.example.swmad_group10_appproject.ViewModels.RankingViewModel;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -63,14 +59,15 @@ public class RankingActivity extends AppCompatActivity {
         items.add(getString(R.string.ScoreThisYear));
         items.add(getString(R.string.ScoreAllTime));
 
-        progressDialog =new ProgressDialog(this);
+        progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Data fetching...");
         progressDialog.show();
         setupUI();
     }
 
-    private void setupUI(){
+    // Initializes the UI
+    private void setupUI() {
 
         rankingViewModel = new ViewModelProvider(this).get(RankingViewModel.class);
 
@@ -79,11 +76,11 @@ public class RankingActivity extends AppCompatActivity {
         autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
         adapterItems = new ArrayAdapter<String>(this,R.layout.dropdown_item,items);
         autoCompleteTextView.setAdapter(adapterItems);
+
+        // Kilde til det her?
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String item = adapterView.getItemAtPosition(position).toString();
-                //Toast.makeText(getApplicationContext(),"Item:"+item,Toast.LENGTH_SHORT).show();
                 switch (position){
                     case 0:
                         daysBack = 1;
@@ -136,16 +133,16 @@ public class RankingActivity extends AppCompatActivity {
             }
         });
 
-        }
+    }
 
+    // Beskriv hvad der sker her
     private void EventChangeListener() {
-        rankingViewModel.Scoregetter().addSnapshotListener(new EventListener<QuerySnapshot>() {
+        rankingViewModel.getScore().addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                         memeArrayList.clear();
                         Date compareDate = new Date(System.currentTimeMillis()-daysBack*24*60*60*1000L);
                         if (e != null){
-
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
                             Log.e("Firestore error", e.getMessage());
@@ -154,14 +151,12 @@ public class RankingActivity extends AppCompatActivity {
                         for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()){
                             if (documentChange.getType() == DocumentChange.Type.ADDED){
                                 Meme meme = documentChange.getDocument().toObject(Meme.class);
-                                // https://stackoverflow.com/questions/11965974/how-to-set-a-java-date-objects-value-to-yesterday
+                                // Inspiration/Reference: https://stackoverflow.com/questions/11965974/how-to-set-a-java-date-objects-value-to-yesterday
                                 if (allTime || meme.getDate().after(compareDate)){
                                     memeArrayList.add(meme);
                                 }
-
                             }
-
-                            rankingAdapter.notifyDataSetChanged();
+                            rankingAdapter.notifyDataSetChanges();
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
                         }

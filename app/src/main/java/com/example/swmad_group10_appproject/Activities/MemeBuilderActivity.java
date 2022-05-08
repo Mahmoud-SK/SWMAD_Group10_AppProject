@@ -15,9 +15,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -31,8 +29,6 @@ import com.example.swmad_group10_appproject.Models.Meme;
 import com.example.swmad_group10_appproject.R;
 import com.example.swmad_group10_appproject.ViewModels.MemeBuilderViewModel;
 
-import android.os.Bundle;
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -45,24 +41,19 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
 
     private static final String TAG = "MemeBuilderActivity";
 
-    Button btn_openCamera, btn_editMeme;
-    ImageButton btn_imgUpload;
-    ImageView img_camera;
-    TextView txt_edit_bottom, txt_edit_top;
-
-    int editButtonCount; // Error handle
-
-    Bitmap captureImage;
-    Meme newMeme;
-
-    MemeBuilderViewModel vm;
+    private Button btn_openCamera, btn_editMeme;
+    private ImageButton btn_imgUpload;
+    private ImageView img_camera;
+    private TextView txt_edit_bottom, txt_edit_top;
+    private int editButtonCount;
+    private Bitmap captureImage;
+    private Meme newMeme;
+    private MemeBuilderViewModel vm;
 
     //Location variables
     protected LocationManager locationManager;
     protected double latitude,longitude;
     private static final int PERMISSION_REQUEST_CODE = 1;
-
-
 
     @Override
     public void onLocationChanged(@NonNull List<Location> locations) {
@@ -83,29 +74,26 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
 
         vm = new ViewModelProvider(this).get(MemeBuilderViewModel.class);
 
-
         CameraSetUp();
-
         LocationSetUp();
 
         btn_openCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Open Camera
+                // Opens the Camera
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 try {
                     openCameraResultLauncher.launch(intent);
-                    //startActivityForResult(intent,100);
                 }catch (Exception e){
                     //Error message
-                    Log.d(TAG, "Open camera error");
+                    Log.d(TAG, "Error opening the camera");
                 }
 
             }
         });
 
-        // Reference: https://www.youtube.com/watch?v=Rd89cVKrQBg
-        //Edit text on meme
+        // Inspiration/Reference taken from: https://www.youtube.com/watch?v=Rd89cVKrQBg
+        // This method is for editing the text on a meme
         btn_editMeme.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,17 +111,20 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
             public void onClick(View view) {
                 Log.d("MemeBuilderActivity", "Test state");
                 if (captureImage != null && editButtonCount!=0){
+                    String topText = txt_edit_top.getText().toString();
+                    String bottomText = txt_edit_bottom.getText().toString();
                     newMeme = new Meme();
-                    newMeme = new Meme(txt_edit_top.getText().toString(),txt_edit_bottom.getText().toString(),"",latitude,longitude,0,0);
+                    newMeme = new Meme(topText,bottomText,"",latitude,longitude,0,0);
 
                     try {
-                        vm.uploadMeme(newMeme,captureImage);        //Upload meme on database
+                        vm.uploadMeme(newMeme,captureImage); // Uploads meme to the Firebase database
+                        Log.d("MemeBuilderActivity", "The meme is saved in database");
                         SaveToast();
-                    }catch (Exception e){
+                    } catch (Exception e){
                         Log.e(TAG, "onClick: ", e );
                     }
+
                     finish();
-                    Log.d("MemeBuilderActivity", "The meme is saved in database");
                 }
             }
         });
@@ -161,7 +152,7 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
     );
 
     private void CameraSetUp() {
-        // Reference: https://www.youtube.com/watch?v=RaOyw84625w
+        // Inspiration/Reference from: https://www.youtube.com/watch?v=RaOyw84625w
         //Request for camera permission
         if(ContextCompat.checkSelfPermission(MemeBuilderActivity.this,
                 Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
@@ -182,10 +173,9 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
     }
 
     public void LocationSetUp(){
-        // Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
-        // Check the android version
+        // Inspiration/Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
+        // Checks the android version
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_DENIED) {
 
@@ -196,8 +186,8 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
 
             }
         }
-        //Reference: https://javapapers.com/android/get-current-location-in-android/
-        // Get current location
+        // Inspiration/Reference: https://javapapers.com/android/get-current-location-in-android/
+        // Gets the current location of the phone.
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,this);

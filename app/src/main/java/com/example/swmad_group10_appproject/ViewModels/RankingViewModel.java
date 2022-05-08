@@ -15,6 +15,9 @@ public class RankingViewModel extends AndroidViewModel {
         super(app);
         repository = Repository.getInstance(app);
     }
-    public Query Scoregetter(){return repository.Scoregetter();}
+
+    public Query getScore() {
+        return repository.getScoreFromDB();
+    }
 
 }

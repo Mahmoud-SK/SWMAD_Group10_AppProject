@@ -5,16 +5,13 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.swmad_group10_appproject.Activities.MemeActivity;
 import com.example.swmad_group10_appproject.R;
 
 // Most of this class is inspired by the fragments made in the lecture videos about fragments
