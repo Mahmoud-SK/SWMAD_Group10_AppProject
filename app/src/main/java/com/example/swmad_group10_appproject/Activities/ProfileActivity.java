@@ -1,5 +1,9 @@
 package com.example.swmad_group10_appproject.Activities;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,7 +46,7 @@ import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity implements LocationListener {
 
-    Button btn_createMeme, btn_uploadMeme;
+    Button btn_createMeme, btn_uploadMeme, btn_back_profile;
     Spinner spr_profile;
     private Meme newMeme;
     ProfileViewModel vm;
@@ -56,6 +60,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
     ArrayAdapter<String> arrayAdapter;
     int radius;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +68,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
 
         btn_uploadMeme = findViewById(R.id.btn_uploadMeme);
         btn_createMeme = findViewById(R.id.btn_CreateMeme);
+        btn_back_profile = findViewById(R.id.btn_back_profile);
         spr_profile = findViewById(R.id.spr_profile);
 
 
@@ -85,6 +91,13 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
           }
         );
 
+        btn_back_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         SpinnerSetup();
         LocationSetup();
         PreloadRadius();
@@ -95,35 +108,33 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-
-        startActivityForResult(intent.createChooser(intent, "Select Picture"), 200);
+        getImageResultLauncher.launch(intent);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // this function is triggered when user
-        // selects the image from the imageChooser
-        if (resultCode == RESULT_OK){
-            if(requestCode==200){
-                final Uri selectedImgUri = data.getData();
-                newMeme = new Meme("","","",0.0,0.0,0,0);
-                // https://stackoverflow.com/questions/3879992/how-to-get-bitmap-from-an-uri
-                Bitmap bitmap = null;
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImgUri);
-                    if (bitmap!=null){
-                        vm.uploadMeme(newMeme,bitmap);
-                        SaveToast();
+    ActivityResultLauncher<Intent> getImageResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode()== AppCompatActivity.RESULT_OK){
+                        Intent data = result.getData();
+                        final Uri selectedImgUri = data.getData();
+                        newMeme = new Meme("","","",0.0,0.0,0,0);
+                        // https://stackoverflow.com/questions/3879992/how-to-get-bitmap-from-an-uri
+                        Bitmap bitmap = null;
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImgUri);
+                            if (bitmap!=null){
+                                vm.uploadMeme(newMeme,bitmap);
+                                SaveToast();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-
             }
-        }
-    }
-
+    );
 
     private void SaveToast(){
         CharSequence text = "You have uploaded your meme from the gallery !";
@@ -151,7 +162,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) this);
         }catch (Exception e){
-
+            Log.d(TAG,"get current location error: " + e);
         }
     }
 
@@ -160,8 +171,6 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
     public void onLocationChanged(@NonNull Location location) {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-        //Log.d(TAG,"Get current location: " +latitude + " " + longitude );
-
     }
 
     @Override

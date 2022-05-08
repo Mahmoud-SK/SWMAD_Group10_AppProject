@@ -1,5 +1,9 @@
 package com.example.swmad_group10_appproject.Activities;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,18 +49,20 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
     ImageButton btn_imgUpload;
     ImageView img_camera;
     TextView txt_edit_bottom, txt_edit_top;
-    TextView txt_Location_test; //Test
+
+    int editButtonCount; // Error handle
 
     Bitmap captureImage;
     Meme newMeme;
 
     MemeBuilderViewModel vm;
 
+    //Location variables
     protected LocationManager locationManager;
     protected double latitude,longitude;
     private static final int PERMISSION_REQUEST_CODE = 1;
 
-    int editButtonCount;
+
 
     @Override
     public void onLocationChanged(@NonNull List<Location> locations) {
@@ -75,7 +81,6 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
         txt_edit_bottom = findViewById(R.id.txt_edit_bottom);
         txt_edit_top = findViewById(R.id.txt_edit_top);
 
-        txt_Location_test = findViewById(R.id.txt_location_test); //Only for tesing
         vm = new ViewModelProvider(this).get(MemeBuilderViewModel.class);
 
         // Reference: https://www.youtube.com/watch?v=RaOyw84625w
@@ -94,9 +99,11 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
                 //Open Camera
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 try {
-                    startActivityForResult(intent,100);
+                    openCameraResultLauncher.launch(intent);
+                    //startActivityForResult(intent,100);
                 }catch (Exception e){
                     //Error message
+                    Log.d(TAG, "Open camera error");
                 }
 
             }
@@ -156,24 +163,29 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,this);
         }catch (Exception e){
-
+            Log.d(TAG,"Get current location error");
         }
 
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==100){
-            //Get Capture Image
-            if (data.getExtras()!=null){
-                captureImage = (Bitmap) data.getExtras().get("data");
+    ActivityResultLauncher<Intent> openCameraResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    Log.d(TAG,"Get RESULT CODE: " + result.getResultCode());
+                    if(result.getResultCode()==RESULT_OK){
+                        //Get Capture Image
+                        if (result.getData().getExtras()!=null){
+                            captureImage = (Bitmap) result.getData().getExtras().get("data");
+                        }
+                        //Set Capture Image
+                        img_camera.setImageBitmap(captureImage);
+                    }
+                }
             }
-            //Set Capture Image
-            img_camera.setImageBitmap(captureImage);
-        }
-    }
+    );
 
     private void SaveToast(){
         CharSequence text = "You have uploaded your meme !";
@@ -186,7 +198,6 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
     public void onLocationChanged(@NonNull Location location) {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-        txt_Location_test.setText("Latitude:" + latitude + ", Longitude:" + longitude);
     }
 
     @Override
