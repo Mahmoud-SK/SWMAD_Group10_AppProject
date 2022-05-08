@@ -10,6 +10,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.example.swmad_group10_appproject.Models.Meme;
 import com.example.swmad_group10_appproject.Models.User;
@@ -189,8 +190,10 @@ public class Repository {
                     for (DocumentSnapshot docSnapshot : queryDocumentSnapshots.getDocuments()) {
                         Meme tempMeme = docSnapshot.toObject(Meme.class);
                         tempMeme.setKey(docSnapshot.getId());
-                        //android.location.Location.distanceBetween()
-                        if (true){
+                        float[] results = new float[3];
+                        android.location.Location.distanceBetween(latitude, longitude,
+                                tempMeme.getLatitude(), tempMeme.getLongitude(), results);
+                        if (results[0] < radius*1000){
                             tempList.add(tempMeme);
                         }
                     }
