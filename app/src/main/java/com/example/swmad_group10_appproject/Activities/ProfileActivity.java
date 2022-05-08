@@ -154,8 +154,8 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         toast.show();
     }
 
+    // Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
     private void LocationSetup() {
-        // Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
         // Check the android version
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 
@@ -199,6 +199,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         LocationListener.super.onProviderDisabled(provider);
     }
 
+    // Reference: https://www.tutorialspoint.com/android/android_spinner_control.htm
     public void SpinnerSetup(){
         arrayList.add("5");
         arrayList.add("10");
