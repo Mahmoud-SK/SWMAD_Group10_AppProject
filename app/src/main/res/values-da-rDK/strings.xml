@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SWMAD_Group10_AppProject</string>
+    <string name="Login">Log på</string>
+    <string name="Register">"Register "</string>
+    <string name="Password">Adgangskode</string>
+    <string name="Email">Email</string>
+    <string name="UserName">Bruger navn</string>
+    <string name="Signup">Logge på</string>
+    <string name="AccountCreate">Opret en ny konto</string>
+    <string name="LoginTo">Log ind på</string>
+    <string name="btnBack">Tilbage</string>
+    <string name="BackButton">Tilbage</string>
+    <string name="back">Tilbage</string>
+    <string name="ranking_your_meme">Top MemesRanking</string>
+    <string name="meme">MEME</string>
+    <string name="btnGoToRanking">Gå til Ranking</string>
+    <string name="btnGoToProfile">Gå til Profile</string>
+    <string name="best_score_for_today">I dag</string>
+    <string name="ScoreToday">I dag</string>
+    <string name="ScoreThisWeek">I ugen</string>
+    <string name="ScoreThisMonth">I denne måned</string>
+    <string name="ScoreThisYear">I året</string>
+    <string name="ScoreAllTime">Altid</string>
+    <string name="btn_openCamera">Åben Kamera</string>
+    <string name="btn_editMeme">Redigerer Meme</string>
+    <string name="txt_chooseRadius">Vælg en radius i km</string>
+    <string name="btn_logout">Log ud</string>
+    <string name="btn_uploadMeme">Upload Meme</string>
+    <string name="btn_createMeme">Lav Meme</string>
+</resources>

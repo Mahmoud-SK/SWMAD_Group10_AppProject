@@ -25,5 +25,11 @@
     <string name="ScoreThisMonth">This Month</string>
     <string name="ScoreThisYear">This Year</string>
     <string name="ScoreAllTime">All Time</string>
+    <string name="btn_openCamera">Open Camera</string>
+    <string name="btn_editMeme">Edit Meme</string>
+    <string name="txt_chooseRadius">Choose a radius in km</string>
+    <string name="btn_logout">Log out</string>
+    <string name="btn_uploadMeme">Upload Meme</string>
+    <string name="btn_createMeme" >Create Meme</string>
 
 </resources>
