@@ -25,4 +25,8 @@ public class ProfileViewModel extends AndroidViewModel  {
     }
 
     public LiveData<Integer> getCurrentRadius(){return repository.getCurrentRadius();}
+
+    public void updateCurrentRadius(int radius) {
+        repository.updateCurrentRadius(radius);
+    }
 }

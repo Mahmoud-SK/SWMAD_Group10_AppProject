@@ -35,11 +35,6 @@
             android:name=".Activities.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".Activities.MainActivity"
-            android:exported="false"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name=".Activities.LoginActivity"
             android:exported="true">
             <intent-filter>

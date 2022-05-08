@@ -237,6 +237,27 @@ public class Repository {
         return result;
     }
 
+    public void updateCurrentRadius(int radius){
+        String email = firebaseAuth.getCurrentUser().getEmail();
+
+        firebaseStore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()){
+                    for (DocumentSnapshot document: queryDocumentSnapshots.getDocuments()){
+                        if (email.equals(document.getData().get("email")))
+                        firebaseStore.collection("users").document(document.getId()).update("radius",radius);
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "onFailure: ",e );
+            }
+        });
+    }
+
     public Query Scoregetter(){
         return firebaseStore.collection("Memes").orderBy("score", Query.Direction.DESCENDING);
     }

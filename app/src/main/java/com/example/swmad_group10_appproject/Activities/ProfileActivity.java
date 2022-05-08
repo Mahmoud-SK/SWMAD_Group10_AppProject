@@ -44,14 +44,9 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
 
     Button btn_createMeme, btn_uploadMeme;
     Spinner spr_profile;
-
     private Meme newMeme;
-    private User user;
-
     ProfileViewModel vm;
-
     public final String TAG = "ProfileActivity";
-
     protected LocationManager locationManager;
     protected double latitude,longitude;
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -91,15 +86,9 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         );
 
         SpinnerSetup();
-
         LocationSetup();
-
         PreloadRadius();
-
     }
-
-
-
 
     //Reference: https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
     private void getImageFromGallery() {
@@ -153,12 +142,9 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
 
                 Log.d("permission", "permission denied to ACCESS_FINE_LOCATION - requesting it");
                 String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
-
                 requestPermissions(permissions, PERMISSION_REQUEST_CODE);
-
             }
         }
-
         //Reference: https://javapapers.com/android/get-current-location-in-android/
         // Get current location
         try {
@@ -211,6 +197,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String itemValue = adapterView.getItemAtPosition(i).toString();
                 radius = Integer.parseInt(itemValue);
+                vm.updateCurrentRadius(radius);
                 setRadius(radius);
             }
 
