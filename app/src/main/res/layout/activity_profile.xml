@@ -45,10 +45,9 @@
         android:id="@+id/spr_profile"
         android:layout_width="99dp"
         android:layout_height="51dp"
-        android:layout_marginTop="36dp"
-        app:layout_constraintEnd_toEndOf="@+id/txt_chosen_radius"
-        app:layout_constraintHorizontal_bias="0.76"
-        app:layout_constraintStart_toStartOf="@+id/txt_chosen_radius"
+        android:layout_marginTop="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_chosen_radius" />
 
     <TextView
@@ -66,21 +65,19 @@
         android:id="@+id/btn_back_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/BackButton"
+        app:layout_constraintBottom_toTopOf="@+id/btn_logOut_profile"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.544"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spr_profile" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_logOut_profile"
         android:layout_width="126dp"
         android:layout_height="46dp"
-        android:layout_marginBottom="184dp"
+        android:layout_marginBottom="70dp"
         android:text="@string/btn_logout"
-        app:layout_constraintBottom_toTopOf="@+id/btn_CreateMeme"
-        app:layout_constraintEnd_toEndOf="@+id/btn_back_profile"
-        app:layout_constraintHorizontal_bias="0.578"
-        app:layout_constraintStart_toStartOf="@+id/btn_back_profile" />
+        app:layout_constraintBottom_toTopOf="@+id/btn_uploadMeme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
