@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
@@ -35,11 +36,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class Repository {
@@ -213,21 +211,55 @@ public class Repository {
         firebaseStore.collection("Memes").document(meme.getKey()).set(meme);
     }
 
-    public Task<QuerySnapshot> getUserLikeMemes(){
 
-        return firebaseStore.collection("Memes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    public LiveData<Integer> getCurrentRadius(){
+        String email = firebaseAuth.getCurrentUser().getEmail();
+        MutableLiveData<Integer> result = new MutableLiveData<Integer>();
+
+        firebaseStore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()){
-                    memeList.setValue(new ArrayList<>());
-
-                    Log.d(TAG, "get memes from firebase: " + task.getResult().getDocuments());
-                }
-                else {
-                    Log.e(TAG, "error getting memes from firebase: ", task.getException());
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()){
+                    for (DocumentSnapshot document: queryDocumentSnapshots.getDocuments()){
+                        User user = document.toObject(User.class);
+                        if (email.equals(user.getEmail())){
+                            result.setValue(user.getRadius());
+                        }
+                    }
                 }
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "onFailure: ",e );
+            }
         });
+        return result;
+    }
+
+    public void updateCurrentRadius(int radius){
+        String email = firebaseAuth.getCurrentUser().getEmail();
+
+        firebaseStore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()){
+                    for (DocumentSnapshot document: queryDocumentSnapshots.getDocuments()){
+                        if (email.equals(document.getData().get("email")))
+                        firebaseStore.collection("users").document(document.getId()).update("radius",radius);
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "onFailure: ",e );
+            }
+        });
+    }
+
+    public Query Scoregetter(){
+        return firebaseStore.collection("Memes").orderBy("score", Query.Direction.DESCENDING);
     }
 
 }

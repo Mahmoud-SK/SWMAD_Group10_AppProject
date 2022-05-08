@@ -7,6 +7,10 @@ public class User {
     private String Username;
     private int Radius;
 
+    public User(){
+
+    }
+
     public User(String email, String password, String username, int radius) {
         Email = email;
         Password = password;
