@@ -44,6 +44,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class MemeActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
     private Location lastLocation;
-    public static final int PERMISSION_REQUEST_LOCATION = 601;
+    public static final int PERMISSIONS_REQUEST_LOCATION = 601;
 
     private LocationManager locationManager;
     //private static final int PERMISSION_REQUEST_CODE;
@@ -118,7 +119,7 @@ public class MemeActivity extends AppCompatActivity {
             }
         });
         //memeVM.getMemesWithinRadius(2);
-        getMemesBasedOnLocation();
+        //getMemesBasedOnLocation();
         setupSwipeDetection();
     }
 
@@ -171,7 +172,7 @@ public class MemeActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
         != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_LOCATION);
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
         }
     }
 
@@ -261,5 +262,26 @@ public class MemeActivity extends AppCompatActivity {
     public boolean dispatchTouchEvent(MotionEvent event){
         gesture.onTouchEvent(event);
         return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getMemesBasedOnLocation();
+                } else {
+                    // permission denied
+                    //in this case we just close the app
+                    Toast.makeText(this, "You need to enable permission for Location to use the app", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                return;
+            }
+        }
     }
 }
