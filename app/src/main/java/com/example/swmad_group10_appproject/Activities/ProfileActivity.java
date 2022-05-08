@@ -5,9 +5,12 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
@@ -29,24 +32,32 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.swmad_group10_appproject.Models.Meme;
+import com.example.swmad_group10_appproject.Models.User;
 import com.example.swmad_group10_appproject.R;
 import com.example.swmad_group10_appproject.ViewModels.ProfileViewModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity implements LocationListener {
 
-    private Button btn_createMeme, btn_uploadMeme, btn_back_profile, btn_logout;
-    private Spinner spr_profile;
+    Button btn_createMeme, btn_uploadMeme, btn_back_profile, btn_logout;
+    Spinner spr_profile;
     private Meme newMeme;
-    private ProfileViewModel vm;
+    ProfileViewModel vm;
     public final String TAG = "ProfileActivity";
     protected LocationManager locationManager;
     protected double latitude,longitude;
     private static final int PERMISSION_REQUEST_CODE = 1;
-    private final ArrayList<String> arrayList = new ArrayList<>();
-    private ArrayAdapter<String> arrayAdapter;
+
+
+    ArrayList<String> arrayList = new ArrayList<>();
+    ArrayAdapter<String> arrayAdapter;
     int radius;
 
 
@@ -60,6 +71,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         btn_back_profile = findViewById(R.id.btn_back_profile);
         btn_logout = findViewById(R.id.btn_logOut_profile);
         spr_profile = findViewById(R.id.spr_profile);
+
 
         vm = new ViewModelProvider(this).get(ProfileViewModel.class);
 
@@ -77,7 +89,8 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         btn_createMeme.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View view) {
-                  gotoMemeBuilderActivity();
+                  Intent intent = new Intent(ProfileActivity.this, MemeBuilderActivity.class);
+                  startActivity(intent);
               }
           }
         );
@@ -92,22 +105,13 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                logoutUser();
+                vm.LogoutUser();
+                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                startActivity(intent);
             }
         });
 
 
-    }
-
-    private void logoutUser() {
-        vm.LogoutUser();
-        Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-        startActivity(intent);
-    }
-
-    private void gotoMemeBuilderActivity() {
-        Intent intent = new Intent(ProfileActivity.this, MemeBuilderActivity.class);
-        startActivity(intent);
     }
 
     ActivityResultLauncher<Intent> getImageResultLauncher = registerForActivityResult(
@@ -152,8 +156,8 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
     }
 
     private void LocationSetup() {
-        // Inspiration/Reference from: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
-        // Checks the android version
+        // Reference: https://stackoverflow.com/questions/32635704/android-permission-doesnt-work-even-if-i-have-declared-it
+        // Check the android version
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_DENIED) {
@@ -195,7 +199,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         LocationListener.super.onProviderDisabled(provider);
     }
 
-    // Kilde?
+    // Reference: https://www.tutorialspoint.com/android/android_spinner_control.htm
     // Creates a dropdown component with the different radius available.
     // When selecting a new radius from the dropdown, the selected radius will be the new radius for the logged in user.
     public void SpinnerSetup(){
