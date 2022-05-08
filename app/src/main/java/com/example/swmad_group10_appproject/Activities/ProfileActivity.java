@@ -50,9 +50,6 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
 
     ProfileViewModel vm;
 
-    RecyclerView recyclerLikedMemeList;
-    RecyclerView.LayoutManager layoutManager;
-
     public final String TAG = "ProfileActivity";
 
     protected LocationManager locationManager;
@@ -61,6 +58,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
 
 
     ArrayList<String> arrayList = new ArrayList<>();
+    ArrayAdapter<String> arrayAdapter;
     int radius;
 
     @Override
@@ -201,7 +199,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         arrayList.add("15");
         arrayList.add("20");
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+        arrayAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item,
                 arrayList
         );
@@ -224,13 +222,21 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
     }
 
     private void PreloadRadius() {
+
         vm.getCurrentRadius().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-
+                for (int x = 0; x<4; x++){
+                    int converValue = Integer.parseInt(arrayAdapter.getItem(x));
+                    if (integer.equals(converValue)){
+                        Log.d(TAG,"Preload Radius: " + integer);
+                        spr_profile.setSelection(x);
+                    }
+                }
             }
         });
     }
+
 
     public void setRadius(int radius){
 
