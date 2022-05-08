@@ -202,7 +202,7 @@ public class MemeBuilderActivity extends AppCompatActivity implements LocationLi
         latitude = location.getLatitude();
         longitude = location.getLongitude();
 
-        Log.d("Latitude","status");
+        Log.d("Latitude",latitude + "Longitude: "+ longitude);
     }
 
     @Override
