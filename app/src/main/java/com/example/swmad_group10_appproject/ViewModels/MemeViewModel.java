@@ -31,8 +31,8 @@ public class MemeViewModel extends AndroidViewModel {
         return memes;
     }
 
-    public void getMemesWithinRadius(int radius){
-        repository.getMemesWithinRadius(memes, radius);
+    public void getMemesWithinRadius(int radius, double latitude, double longitude){
+        repository.getMemesWithinRadius(memes, radius, latitude, longitude);
     }
 
     public Task<QuerySnapshot> getMemes(){

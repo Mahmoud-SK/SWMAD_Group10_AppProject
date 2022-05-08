@@ -178,7 +178,7 @@ public class Repository {
          });*/
     }
 
-    public void getMemesWithinRadius(MutableLiveData<List<Meme>> result, int radius){
+    public void getMemesWithinRadius(MutableLiveData<List<Meme>> result, int radius, double latitude, double longitude){
         //Get result from firbase back to a meme model
         // https://www.geeksforgeeks.org/how-to-update-data-in-firebase-firestore-in-android/
         List<Meme> tempList = new ArrayList<Meme>();
