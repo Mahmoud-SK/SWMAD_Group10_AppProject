@@ -81,8 +81,6 @@ public class RankingActivity extends AppCompatActivity {
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String item = adapterView.getItemAtPosition(position).toString();
-                //Toast.makeText(getApplicationContext(),"Item:"+item,Toast.LENGTH_SHORT).show();
                 switch (position){
                     case 0:
                         daysBack = 1;
