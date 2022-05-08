@@ -42,8 +42,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="9dp"
+        android:backgroundTint="@color/brune"
         android:text="@string/Login"
-        android:backgroundTint="@color/design_default_color_primary_variant"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -52,8 +52,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
+        android:backgroundTint="@color/brune"
         android:text="@string/Register"
-        android:backgroundTint="@color/design_default_color_primary_variant"
         app:layout_constraintEnd_toEndOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -64,7 +64,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="27dp"
         android:autofillHints=""
-        android:background="@color/design_default_color_primary_dark"
+        android:background="@color/brune"
         android:ems="10"
         android:fontFamily="sans-serif-medium"
         android:hint="@string/Email"
@@ -84,7 +84,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:autofillHints=""
-        android:background="@color/design_default_color_primary_dark"
+        android:background="@color/brune"
         android:ems="10"
         android:fontFamily="sans-serif-medium"
         android:hint="@string/Password"
