@@ -200,27 +200,32 @@ public class Repository {
     }
 
     public LiveData<Integer> getCurrentRadius(){
-        String email = firebaseAuth.getCurrentUser().getEmail();
+        FirebaseUser user = getCurrentUser();
         MutableLiveData<Integer> result = new MutableLiveData<Integer>();
+        if (user != null) {
+            String email = firebaseAuth.getCurrentUser().getEmail();
 
-        firebaseStore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (!queryDocumentSnapshots.isEmpty()){
-                    for (DocumentSnapshot document: queryDocumentSnapshots.getDocuments()){
-                        User user = document.toObject(User.class);
-                        if (email.equals(user.getEmail())){
-                            result.setValue(user.getRadius());
+            firebaseStore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    if (!queryDocumentSnapshots.isEmpty()){
+                        for (DocumentSnapshot document: queryDocumentSnapshots.getDocuments()){
+                            User user = document.toObject(User.class);
+                            if (user.getEmail() != null) {
+                                if (email.equals(user.getEmail())) {
+                                    result.setValue(user.getRadius());
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "onFailure: ",e );
-            }
-        });
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e(TAG, "onFailure: ",e );
+                }
+            });
+        }
         return result;
     }
 
